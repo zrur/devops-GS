@@ -1,8 +1,5 @@
 # AquaMind – Sistema Inteligente de Irrigação
 
-<p align="center">
-  <img src="https://i.imgur.com/0QzZc3u.png" alt="AquaMind Logo" width="200"/>
-</p>
 
 > **AquaMind** é uma solução completa para pequenos e médios produtores rurais que desejam monitorar e automatizar a irrigação de suas propriedades, 
 > especialmente em regiões com escassez hídrica. Com integração IoT, backend Java Spring Boot, dashboard web, API REST, segurança JWT e containerização, 
@@ -85,66 +82,48 @@ Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025-1 e
 
 src/
 ├── main/
-│ ├── java/com/fiap/aquamind/
-│ │ ├── AquamindApplication.java // Classe principal Spring Boot
-│ │ ├── config/ // Configurações de segurança, CORS, Swagger
-│ │ │ ├── SecurityConfig.java // HTTP Basic / JWT / roles
-│ │ │ ├── SwaggerConfig.java // Personalização da doc OpenAPI
-│ │ │ └── CorsConfig.java // Configuração global de CORS
-│ │ ├── controller/ // Endpoints REST
-│ │ │ ├── AuthController.java // Registro e login (JWT)
-│ │ │ ├── PropriedadeController.java // CRUD de Propriedades
-│ │ │ ├── ZonaController.java // CRUD de Zonas
-│ │ │ ├── SensorController.java // CRUD de Sensores
-│ │ │ ├── LeituraController.java // Persistência de leituras
-│ │ │ └── IrrigacaoController.java // Histórico de irrigação
-│ │ ├── dto/ // Data Transfer Objects (entrada/saída)
-│ │ │ ├── auth/
-│ │ │ │ ├── LoginRequest.java
-│ │ │ │ ├── RegisterRequest.java
-│ │ │ │ └── AuthResponse.java
-│ │ │ ├── PropriedadeDTO.java
-│ │ │ ├── ZonaDTO.java
-│ │ │ ├── SensorDTO.java
-│ │ │ ├── LeituraDTO.java
-│ │ │ └── IrrigacaoDTO.java
-│ │ ├── entity/ // Entidades JPA (modelos de domínio)
-│ │ │ ├── Usuario.java
-│ │ │ ├── Propriedade.java
-│ │ │ ├── Zona.java
-│ │ │ ├── Sensor.java
-│ │ │ ├── Leitura.java
-│ │ │ └── Irrigacao.java
-│ │ ├── repository/ // Interfaces Spring Data JPA
-│ │ │ ├── UsuarioRepository.java
-│ │ │ ├── PropriedadeRepository.java
-│ │ │ ├── ZonaRepository.java
-│ │ │ ├── SensorRepository.java
-│ │ │ ├── LeituraRepository.java
-│ │ │ └── IrrigacaoRepository.java
-│ │ ├── service/ // Lógica de negócio
-│ │ │ ├── AuthService.java
-│ │ │ ├── PropriedadeService.java
-│ │ │ ├── ZonaService.java
-│ │ │ ├── SensorService.java
-│ │ │ ├── LeituraService.java
-│ │ │ └── IrrigacaoService.java
-│ │ ├── security/ // JWT, filtros e UserDetails
-│ │ │ ├── JwtUtil.java
-│ │ │ ├── JwtAuthenticationFilter.java
-│ │ │ └── CustomUserDetailsService.java
-│ │ └── exception/ // Tratamento de erros global
-│ │ ├── GlobalExceptionHandler.java
-│ │ ├── ResourceNotFoundException.java
-│ │ └── BadRequestException.java
-│ └── resources/
-│ ├── application.properties (ou application.yml)
-│ └── data.sql // Popula dados iniciais (opcional)
-└── test/
-└── java/com/fiap/aquamind/
-├── controller/ // Testes de integração de endpoints
-├── service/ // Testes unitários de serviços
-└── repository/ // Testes de repositório (H2)
+│   ├── java/
+│   │   └── com/
+│   │       └── fiap/
+│   │           └── aquamind/
+│   │               ├── AquamindApplication.java
+│   │               │   └── • Classe principal do Spring Boot
+│   │               │
+│   │               ├── config/
+│   │               │   ├── CorsConfig.java
+│   │               │   │   └── • Configuração global de CORS
+│   │               │   │
+│   │               │   ├── SecurityConfig.java
+│   │               │   │   └── • HTTP Basic / JWT / roles / autorizações
+│   │               │   │
+│   │               │   └── SwaggerConfig.java
+│   │               │       └── • Personalização da documentação OpenAPI (Swagger)
+│   │               │
+│   │               ├── controller/
+│   │               │   ├── AuthController.java
+│   │               │   │   └── • Registro e login (JWT)
+│   │               │   │
+│   │               │   ├── PropriedadeController.java
+│   │               │   │   └── • CRUD de Propriedades
+│   │               │   │
+│   │               │   ├── ZonaController.java
+│   │               │   │   └── • CRUD de Zonas
+│   │               │   │
+│   │               │   ├── SensorController.java
+│   │               │   │   └── • CRUD de Sensores
+│   │               │   │
+│   │               │   ├── LeituraController.java
+│   │               │   │   └── • Persistência de Leituras
+│   │               │   │
+│   │               │   └── IrrigacaoController.java
+│   │               │       └── • Histórico de Irrigação
+│   │               │
+│   │               ├── dto/
+│   │               │   ├── auth/
+│   │               │   │   ├── LoginRequest.java
+│   │               │   │   ├── RegisterRequest.java
+│   │               │   │   └
+
 
 
 ---

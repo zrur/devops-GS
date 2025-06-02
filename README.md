@@ -122,7 +122,60 @@ src/
 │   │               │   ├── auth/
 │   │               │   │   ├── LoginRequest.java
 │   │               │   │   ├── RegisterRequest.java
-│   │               │   │   └
+│   │               │   │   └── AuthResponse.java
+│   │               │   │
+│   │               │   ├── PropriedadeDTO.java
+│   │               │   ├── ZonaDTO.java
+│   │               │   ├── SensorDTO.java
+│   │               │   ├── LeituraDTO.java
+│   │               │   └── IrrigacaoDTO.java
+│   │               │
+│   │               ├── model/
+│   │               │   ├── Usuario.java
+│   │               │   ├── Propriedade.java
+│   │               │   ├── Zona.java
+│   │               │   ├── Sensor.java
+│   │               │   ├── Leitura.java
+│   │               │   └── Irrigacao.java
+│   │               │
+│   │               ├── repository/
+│   │               │   ├── UsuarioRepository.java
+│   │               │   ├── PropriedadeRepository.java
+│   │               │   ├── ZonaRepository.java
+│   │               │   ├── SensorRepository.java
+│   │               │   ├── LeituraRepository.java
+│   │               │   └── IrrigacaoRepository.java
+│   │               │
+│   │               ├── service/
+│   │               │   ├── AuthService.java
+│   │               │   ├── PropriedadeService.java
+│   │               │   ├── ZonaService.java
+│   │               │   ├── SensorService.java
+│   │               │   ├── LeituraService.java
+│   │               │   └── IrrigacaoService.java
+│   │               │
+│   │               ├── security/
+│   │               │   ├── JwtUtil.java
+│   │               │   ├── JwtAuthenticationFilter.java
+│   │               │   └── CustomUserDetailsService.java
+│   │               │
+│   │               └── exception/
+│   │                   ├── GlobalExceptionHandler.java
+│   │                   ├── ResourceNotFoundException.java
+│   │                   └── BadRequestException.java
+│   │
+│   └── resources/
+│       ├── application.properties   ── • Configurações de conexão, JPA, H2, JWT, etc.
+│       └── data.sql                  ── (Opcional) scripts de preenchimento inicial do banco
+│
+└── test/
+└── java/
+└── com/
+└── fiap/
+└── aquamind/
+├── controller/   ── • Testes de integração dos endpoints
+├── service/      ── • Testes unitários dos serviços
+└── repository/   ── • Testes de repositório (H2)
 
 
 

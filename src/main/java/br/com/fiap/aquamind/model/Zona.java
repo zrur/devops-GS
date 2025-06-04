@@ -50,10 +50,7 @@ public class Zona {
     @OneToMany(mappedBy = "zona", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<AlertaUmidade> alertas;
 
-    public Zona() {
-        // Construtor padrão (necessário ao JPA)
-    }
-
+    public Zona() { }
 
     public Long getId() {
         return id;
@@ -142,7 +139,6 @@ public class Zona {
     public void setAlertas(List<AlertaUmidade> alertas) {
         this.alertas = alertas;
     }
-
 
     @PrePersist
     public void prePersist() {

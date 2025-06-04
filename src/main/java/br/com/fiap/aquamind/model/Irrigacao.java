@@ -1,15 +1,6 @@
 package br.com.fiap.aquamind.model;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.SequenceGenerator;
-import jakarta.persistence.Column;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
+import jakarta.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
@@ -40,6 +31,8 @@ public class Irrigacao {
     private Double volumeAgua;
 
     public Irrigacao() { }
+
+    // GETTERS E SETTERS
 
     public Long getIdIrrigacao() {
         return idIrrigacao;

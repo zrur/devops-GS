@@ -1,5 +1,6 @@
 package br.com.fiap.aquamind.dto;
 
+import br.com.fiap.aquamind.model.Sensor;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -47,6 +48,8 @@ public class SensorDTO {
         this.dataInstalacao = dataInstalacao;
     }
 
+    // GETTERS E SETTERS
+
     public Long getId() {
         return id;
     }
@@ -93,5 +96,49 @@ public class SensorDTO {
 
     public void setDataInstalacao(LocalDate dataInstalacao) {
         this.dataInstalacao = dataInstalacao;
+    }
+
+    /**
+     * Converte uma entidade Sensor em SensorDTO.
+     */
+    public static SensorDTO fromEntity(Sensor sensor) {
+        if (sensor == null) {
+            return null;
+        }
+        Long zonaId = null;
+        if (sensor.getZona() != null) {
+            zonaId = sensor.getZona().getId();
+        }
+        return new SensorDTO(
+                sensor.getId(),
+                zonaId,
+                sensor.getTipoSensor(),
+                sensor.getModelo(),
+                sensor.getAtivo(),
+                sensor.getDataInstalacao()
+        );
+    }
+
+    /**
+     * Converte este DTO em uma nova entidade Sensor (usado no POST).
+     */
+    public Sensor toEntity() {
+        Sensor s = new Sensor();
+        s.setTipoSensor(this.tipoSensor);
+        s.setModelo(this.modelo);
+        s.setAtivo(this.ativo);
+        s.setDataInstalacao(this.dataInstalacao);
+        return s;
+    }
+
+    /**
+     * Atualiza os campos de uma entidade Sensor existente a partir deste DTO (usado no PUT).
+     */
+    public Sensor updateEntity(Sensor existente) {
+        existente.setTipoSensor(this.tipoSensor);
+        existente.setModelo(this.modelo);
+        existente.setAtivo(this.ativo);
+        existente.setDataInstalacao(this.dataInstalacao);
+        return existente;
     }
 }

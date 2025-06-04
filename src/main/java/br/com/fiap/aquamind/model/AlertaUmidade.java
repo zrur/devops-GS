@@ -1,3 +1,4 @@
+// src/main/java/br/com/fiap/aquamind/model/AlertaUmidade.java
 package br.com.fiap.aquamind.model;
 
 import jakarta.persistence.*;
@@ -39,10 +40,9 @@ public class AlertaUmidade {
     @JoinColumn(name = "id_zona", nullable = false)
     private Zona zona;
 
-    public AlertaUmidade() {
+    public AlertaUmidade() { }
 
-    }
-
+    // Getters e setters
     public Long getId() {
         return id;
     }

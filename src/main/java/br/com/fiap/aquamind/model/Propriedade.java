@@ -49,6 +49,7 @@ public class Propriedade {
         // Construtor padrão (necessário ao JPA)
     }
 
+    // GETTERS E SETTERS
 
     public Long getId() {
         return id;

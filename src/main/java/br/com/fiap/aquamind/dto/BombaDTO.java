@@ -1,5 +1,6 @@
 package br.com.fiap.aquamind.dto;
 
+import br.com.fiap.aquamind.model.Bomba;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -7,7 +8,7 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
- * DTO para a entidade Bomba.
+ * DTO para entrada/saída de dados de Bomba.
  */
 public class BombaDTO {
 
@@ -30,7 +31,9 @@ public class BombaDTO {
     @NotNull(message = "A data de instalação não pode ser nula")
     private LocalDate dataInstalacao;
 
-    public BombaDTO() { }
+    public BombaDTO() {
+        // Construtor vazio para desserialização
+    }
 
     public BombaDTO(
             Long id,
@@ -47,6 +50,8 @@ public class BombaDTO {
         this.ativo = ativo;
         this.dataInstalacao = dataInstalacao;
     }
+
+    // GETTERS e SETTERS:
 
     public Long getId() {
         return id;
@@ -94,5 +99,28 @@ public class BombaDTO {
 
     public void setDataInstalacao(LocalDate dataInstalacao) {
         this.dataInstalacao = dataInstalacao;
+    }
+
+    /**
+     * Converte uma entidade Bomba em BombaDTO.
+     */
+    public static BombaDTO fromEntity(Bomba bomba) {
+        if (bomba == null) {
+            return null;
+        }
+
+        Long zonaId = null;
+        if (bomba.getZona() != null) {
+            zonaId = bomba.getZona().getId();
+        }
+
+        return new BombaDTO(
+                bomba.getId(),
+                zonaId,
+                bomba.getModelo(),
+                bomba.getStatus(),
+                bomba.getAtivo(),
+                bomba.getDataInstalacao()
+        );
     }
 }

@@ -1,7 +1,7 @@
 package br.com.fiap.aquamind.dto;
 
+import br.com.fiap.aquamind.model.Estado;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 /**
@@ -27,10 +27,10 @@ public class EstadoDTO {
         this.sigla = sigla;
     }
 
+    // GETTERS E SETTERS
     public Long getId() {
         return id;
     }
-
     public void setId(Long id) {
         this.id = id;
     }
@@ -38,7 +38,6 @@ public class EstadoDTO {
     public String getNome() {
         return nome;
     }
-
     public void setNome(String nome) {
         this.nome = nome;
     }
@@ -46,8 +45,33 @@ public class EstadoDTO {
     public String getSigla() {
         return sigla;
     }
-
     public void setSigla(String sigla) {
         this.sigla = sigla;
+    }
+
+    /**
+     * Converte uma entidade Estado em EstadoDTO.
+     */
+    public static EstadoDTO fromEntity(Estado estado) {
+        if (estado == null) {
+            return null;
+        }
+        return new EstadoDTO(
+                estado.getId(),
+                estado.getNome(),
+                estado.getSigla()
+        );
+    }
+
+    /**
+     * Converte este DTO em uma nova entidade Estado.
+     * Usado principalmente no POST (quando criamos um Estado).
+     */
+    public Estado toEntity() {
+        Estado e = new Estado();
+        e.setId(this.id);
+        e.setNome(this.nome);
+        e.setSigla(this.sigla);
+        return e;
     }
 }

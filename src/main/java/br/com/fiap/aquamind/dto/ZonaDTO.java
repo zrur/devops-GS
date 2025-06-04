@@ -1,5 +1,6 @@
 package br.com.fiap.aquamind.dto;
 
+import br.com.fiap.aquamind.model.Zona;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -76,5 +77,46 @@ public class ZonaDTO {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    /**
+     * Converte uma entidade Zona em ZonaDTO.
+     */
+    public static ZonaDTO fromEntity(Zona z) {
+        if (z == null) {
+            return null;
+        }
+        Long propriedadeId = null;
+        if (z.getPropriedade() != null) {
+            propriedadeId = z.getPropriedade().getId();
+        }
+        return new ZonaDTO(
+                z.getId(),
+                propriedadeId,
+                z.getNome(),
+                z.getAreaHectares(),
+                z.getAtivo()
+        );
+    }
+
+    /**
+     * Converte este DTO em uma nova entidade Zona (usado no POST).
+     */
+    public Zona toEntity() {
+        Zona z = new Zona();
+        z.setNome(this.nome);
+        z.setAreaHectares(this.areaHectares);
+        z.setAtivo(this.ativo);
+        return z;
+    }
+
+    /**
+     * Atualiza os campos de uma entidade Zona existente a partir deste DTO (usado no PUT).
+     */
+    public Zona updateEntity(Zona existente) {
+        existente.setNome(this.nome);
+        existente.setAreaHectares(this.areaHectares);
+        existente.setAtivo(this.ativo);
+        return existente;
     }
 }

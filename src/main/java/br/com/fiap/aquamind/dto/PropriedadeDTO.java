@@ -1,5 +1,6 @@
 package br.com.fiap.aquamind.dto;
 
+import br.com.fiap.aquamind.model.Propriedade;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -33,7 +34,14 @@ public class PropriedadeDTO {
 
     public PropriedadeDTO() { }
 
-    public PropriedadeDTO(Long id, String nome, Long idUsuario, Long idEstado, BigDecimal areaHectares, Boolean ativo) {
+    public PropriedadeDTO(
+            Long id,
+            String nome,
+            Long idUsuario,
+            Long idEstado,
+            BigDecimal areaHectares,
+            Boolean ativo
+    ) {
         this.id = id;
         this.nome = nome;
         this.idUsuario = idUsuario;
@@ -41,6 +49,8 @@ public class PropriedadeDTO {
         this.areaHectares = areaHectares;
         this.ativo = ativo;
     }
+
+    // GETTERS E SETTERS
 
     public Long getId() {
         return id;
@@ -88,5 +98,55 @@ public class PropriedadeDTO {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    /**
+     * Converte uma entidade Propriedade em PropriedadeDTO.
+     */
+    public static PropriedadeDTO fromEntity(Propriedade p) {
+        if (p == null) {
+            return null;
+        }
+        Long usuarioId = null;
+        if (p.getUsuario() != null) {
+            usuarioId = p.getUsuario().getId();
+        }
+        Long estadoId = null;
+        if (p.getEstado() != null) {
+            estadoId = p.getEstado().getId();
+        }
+        return new PropriedadeDTO(
+                p.getId(),
+                p.getNome(),
+                usuarioId,
+                estadoId,
+                p.getAreaHectares(),
+                p.getAtivo()
+        );
+    }
+
+    /**
+     * Converte este DTO em uma nova entidade Propriedade.
+     * Para POST, cria uma instância nova (sem setar ID).
+     */
+    public Propriedade toEntity() {
+        Propriedade p = new Propriedade();
+        p.setNome(this.nome);
+        p.setAreaHectares(this.areaHectares);
+        p.setAtivo(this.ativo);
+        return p;
+    }
+
+    /**
+     * Atualiza os campos de uma entidade existente a partir deste DTO.
+     * Por exemplo, em PUT, use:
+     *    Propriedade existente = repository.findById(id).orElseThrow(...);
+     *    existente = dto.updateEntity(existente);
+     */
+    public Propriedade updateEntity(Propriedade existente) {
+        existente.setNome(this.nome);
+        existente.setAreaHectares(this.areaHectares);
+        existente.setAtivo(this.ativo);
+        return existente;
     }
 }

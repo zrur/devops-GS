@@ -31,9 +31,9 @@ public class RegistroSensor {
     @JoinColumn(name = "id_sensor", nullable = false)
     private Sensor sensor;
 
-    public RegistroSensor() {
+    public RegistroSensor() { }
 
-    }
+    // GETTERS E SETTERS
 
     public Long getId() {
         return id;

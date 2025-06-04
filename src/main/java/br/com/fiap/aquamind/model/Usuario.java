@@ -46,6 +46,7 @@ public class Usuario {
         // Construtor padrão (necessário ao JPA)
     }
 
+    // GETTERS E SETTERS
 
     public Long getId() {
         return id;
@@ -118,7 +119,6 @@ public class Usuario {
     public void setPropriedades(List<Propriedade> propriedades) {
         this.propriedades = propriedades;
     }
-
 
     @PrePersist
     public void prePersist() {

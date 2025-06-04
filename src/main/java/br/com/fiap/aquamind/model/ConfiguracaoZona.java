@@ -1,3 +1,4 @@
+// src/main/java/br/com/fiap/aquamind/model/ConfiguracaoZona.java
 package br.com.fiap.aquamind.model;
 
 import jakarta.persistence.*;
@@ -39,11 +40,9 @@ public class ConfiguracaoZona {
     @JoinColumn(name = "id_zona", nullable = false)
     private Zona zona;
 
-    public ConfiguracaoZona() {
+    public ConfiguracaoZona() { }
 
-    }
-
-
+    // Getters e setters
     public Long getId() {
         return id;
     }
@@ -107,7 +106,6 @@ public class ConfiguracaoZona {
     public void setZona(Zona zona) {
         this.zona = zona;
     }
-
 
     @PrePersist
     public void prePersist() {

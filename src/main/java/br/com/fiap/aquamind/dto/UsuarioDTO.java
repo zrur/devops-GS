@@ -1,5 +1,6 @@
 package br.com.fiap.aquamind.dto;
 
+import br.com.fiap.aquamind.model.Usuario;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -42,6 +43,8 @@ public class UsuarioDTO {
         this.tipoUsuario = tipoUsuario;
         this.ativo = ativo;
     }
+
+    // GETTERS e SETTERS
 
     public Long getId() {
         return id;
@@ -89,5 +92,48 @@ public class UsuarioDTO {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    /**
+     * Converte uma entidade Usuario em UsuarioDTO.
+     */
+    public static UsuarioDTO fromEntity(Usuario user) {
+        if (user == null) {
+            return null;
+        }
+        return new UsuarioDTO(
+                user.getId(),
+                user.getNome(),
+                user.getEmail(),
+                user.getSenha(),
+                user.getTipoUsuario(),
+                user.getAtivo()
+        );
+    }
+
+    /**
+     * Converte este DTO em uma nova entidade Usuario (usado no POST).
+     */
+    public Usuario toEntity() {
+        Usuario u = new Usuario();
+        u.setNome(this.nome);
+        u.setEmail(this.email);
+        u.setSenha(this.senha);
+        u.setTipoUsuario(this.tipoUsuario);
+        u.setAtivo(this.ativo);
+        return u;
+    }
+
+    /**
+     * Atualiza os campos de uma entidade Usuario existente a partir deste DTO (usado no PUT).
+     * Mantém o ID original.
+     */
+    public Usuario updateEntity(Usuario existente) {
+        existente.setNome(this.nome);
+        existente.setEmail(this.email);
+        existente.setSenha(this.senha);
+        existente.setTipoUsuario(this.tipoUsuario);
+        existente.setAtivo(this.ativo);
+        return existente;
     }
 }

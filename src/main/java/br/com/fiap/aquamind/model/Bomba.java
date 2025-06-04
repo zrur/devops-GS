@@ -37,10 +37,12 @@ public class Bomba {
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
+    // RELACIONAMENTO ManyToOne para Zona:
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_zona", nullable = false)
     private Zona zona;
 
+    // RELACIONAMENTO OneToMany para logs de ação da bomba (caso existam):
     @OneToMany(mappedBy = "bomba", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LogAcaoBomba> logs;
 
@@ -48,6 +50,7 @@ public class Bomba {
         // Construtor padrão (necessário ao JPA)
     }
 
+    // GETTERS e SETTERS:
 
     public Long getId() {
         return id;
@@ -121,6 +124,7 @@ public class Bomba {
         this.logs = logs;
     }
 
+    // PrePersist e PreUpdate para “created_at” e “updated_at”:
     @PrePersist
     public void prePersist() {
         this.dataCriacao = LocalDateTime.now();

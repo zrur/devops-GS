@@ -1,3 +1,4 @@
+// src/main/java/br/com/fiap/aquamind/model/HistoricoAcaoUsuario.java
 package br.com.fiap.aquamind.model;
 
 import jakarta.persistence.*;
@@ -27,11 +28,9 @@ public class HistoricoAcaoUsuario {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    public HistoricoAcaoUsuario() {
+    public HistoricoAcaoUsuario() { }
 
-    }
-
-
+    // Getters e setters
     public Long getId() {
         return id;
     }
@@ -63,7 +62,6 @@ public class HistoricoAcaoUsuario {
     public void setUsuario(Usuario usuario) {
         this.usuario = usuario;
     }
-
 
     @PrePersist
     public void prePersist() {

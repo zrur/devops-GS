@@ -1,16 +1,19 @@
 package br.com.fiap.aquamind.controller;
 
+import br.com.fiap.aquamind.dto.UsuarioDTO;
 import br.com.fiap.aquamind.exception.ResourceNotFoundException;
 import br.com.fiap.aquamind.model.Usuario;
 import br.com.fiap.aquamind.repository.UsuarioRepository;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * Endpoints REST para CRUD de Usuario
+ * Endpoints REST para CRUD de Usuario, usando DTO.
  */
 @RestController
 @RequestMapping("/api/usuarios")
@@ -19,48 +22,73 @@ public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
 
-    // GET /api/usuarios
+    /**
+     * GET /api/usuarios
+     * Retorna todos os usuários como DTOs.
+     */
     @GetMapping
-    public List<Usuario> listarTodos() {
-        return usuarioRepository.findAll();
+    public List<UsuarioDTO> listarTodos() {
+        List<Usuario> lista = usuarioRepository.findAll();
+        return lista.stream()
+                .map(UsuarioDTO::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    // GET /api/usuarios/{id}
+    /**
+     * GET /api/usuarios/{id}
+     * Busca um usuário por ID. Se não existir, retorna 404.
+     */
     @GetMapping("/{id}")
-    public Usuario buscarPorId(@PathVariable Long id) {
-        return usuarioRepository.findById(id)
+    public UsuarioDTO buscarPorId(@PathVariable Long id) {
+        Usuario u = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id = " + id));
+        return UsuarioDTO.fromEntity(u);
     }
 
-    // POST /api/usuarios
+    /**
+     * POST /api/usuarios
+     * Cria um novo usuário. Valida o DTO, converte para entidade, salva e retorna DTO com 201.
+     */
     @PostMapping
-    public Usuario criar(@RequestBody Usuario novoUsuario) {
-        // Exemplo: aqui você pode criptografar a senha antes de salvar (se não usar AuthController)
-        return usuarioRepository.save(novoUsuario);
+    public ResponseEntity<UsuarioDTO> criar(@Valid @RequestBody UsuarioDTO novoDTO) {
+        // Aqui você pode criptografar a senha antes de salvar, se quiser:
+        // String senhaCripto = passwordEncoder.encode(novoDTO.getSenha());
+        // novoDTO.setSenha(senhaCripto);
+
+        Usuario user = novoDTO.toEntity();
+        Usuario salvo = usuarioRepository.save(user);
+        UsuarioDTO respostaDTO = UsuarioDTO.fromEntity(salvo);
+        return ResponseEntity.status(201).body(respostaDTO);
     }
 
-    // PUT /api/usuarios/{id}
+    /**
+     * PUT /api/usuarios/{id}
+     * Atualiza um usuário existente. Se não existir, retorna 404.
+     */
     @PutMapping("/{id}")
-    public Usuario atualizar(
+    public ResponseEntity<UsuarioDTO> atualizar(
             @PathVariable Long id,
-            @RequestBody Usuario dadosAtualizados
+            @Valid @RequestBody UsuarioDTO dtoAtualizado
     ) {
         Usuario existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id = " + id));
 
-        existente.setNome(dadosAtualizados.getNome());
-        existente.setEmail(dadosAtualizados.getEmail());
-        existente.setSenha(dadosAtualizados.getSenha());
-        existente.setTipoUsuario(dadosAtualizados.getTipoUsuario());
-        existente.setAtivo(dadosAtualizados.getAtivo());
-        // O campo dataAtualizacao será atualizado automaticamente por um @PreUpdate na entidade (se existir)
+        // Se precisar criptografar senha, faça aqui:
+        // String senhaCripto = passwordEncoder.encode(dtoAtualizado.getSenha());
+        // dtoAtualizado.setSenha(senhaCripto);
 
-        return usuarioRepository.save(existente);
+        existente = dtoAtualizado.updateEntity(existente);
+        Usuario atualizado = usuarioRepository.save(existente);
+        UsuarioDTO respostaDTO = UsuarioDTO.fromEntity(atualizado);
+        return ResponseEntity.ok(respostaDTO);
     }
 
-    // DELETE /api/usuarios/{id}
+    /**
+     * DELETE /api/usuarios/{id}
+     * Deleta um usuário existente; se não existir, retorna 404.
+     */
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> deletar(@PathVariable Long id) {
+    public ResponseEntity<Void> deletar(@PathVariable Long id) {
         Usuario existente = usuarioRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id = " + id));
 

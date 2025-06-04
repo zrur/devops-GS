@@ -1,3 +1,4 @@
+// src/main/java/br/com/fiap/aquamind/model/LogAcaoBomba.java
 package br.com.fiap.aquamind.model;
 
 import jakarta.persistence.*;
@@ -31,11 +32,9 @@ public class LogAcaoBomba {
     @JoinColumn(name = "id_usuario", nullable = false)
     private Usuario usuario;
 
-    public LogAcaoBomba() {
+    public LogAcaoBomba() { }
 
-    }
-
-
+    // Getters e setters
     public Long getId() {
         return id;
     }

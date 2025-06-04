@@ -1,37 +1,35 @@
 package br.com.fiap.aquamind.model;
 
 import jakarta.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-@Table(name = "usuarios")
-public class Usuario {
+@Table(name = "bombas")
+public class Bomba {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_usuarios")
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_bombas")
     @SequenceGenerator(
-            name = "seq_usuarios",
-            sequenceName = "seq_usuarios",
+            name = "seq_bombas",
+            sequenceName = "seq_bombas",
             allocationSize = 1
     )
-    @Column(name = "id_usuario")
+    @Column(name = "id_bomba")
     private Long id;
 
-    @Column(name = "nome", length = 150, nullable = false)
-    private String nome;
+    @Column(name = "modelo", length = 100, nullable = false)
+    private String modelo;
 
-    @Column(name = "email", length = 150, nullable = false, unique = true)
-    private String email;
-
-    @Column(name = "senha", length = 512, nullable = false)
-    private String senha;
-
-    @Column(name = "tipo_usuario", length = 20, nullable = false)
-    private String tipoUsuario;
+    @Column(name = "status", length = 20, nullable = false)
+    private String status;
 
     @Column(name = "ativo", nullable = false)
     private Boolean ativo = true;
+
+    @Column(name = "data_instalacao")
+    private LocalDate dataInstalacao;
 
     @Column(name = "data_criacao", nullable = false, updatable = false)
     private LocalDateTime dataCriacao;
@@ -39,10 +37,14 @@ public class Usuario {
     @Column(name = "data_atualizacao")
     private LocalDateTime dataAtualizacao;
 
-    @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Propriedade> propriedades;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "id_zona", nullable = false)
+    private Zona zona;
 
-    public Usuario() {
+    @OneToMany(mappedBy = "bomba", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<LogAcaoBomba> logs;
+
+    public Bomba() {
         // Construtor padrão (necessário ao JPA)
     }
 
@@ -55,36 +57,20 @@ public class Usuario {
         this.id = id;
     }
 
-    public String getNome() {
-        return nome;
+    public String getModelo() {
+        return modelo;
     }
 
-    public void setNome(String nome) {
-        this.nome = nome;
+    public void setModelo(String modelo) {
+        this.modelo = modelo;
     }
 
-    public String getEmail() {
-        return email;
+    public String getStatus() {
+        return status;
     }
 
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getSenha() {
-        return senha;
-    }
-
-    public void setSenha(String senha) {
-        this.senha = senha;
-    }
-
-    public String getTipoUsuario() {
-        return tipoUsuario;
-    }
-
-    public void setTipoUsuario(String tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Boolean getAtivo() {
@@ -93,6 +79,14 @@ public class Usuario {
 
     public void setAtivo(Boolean ativo) {
         this.ativo = ativo;
+    }
+
+    public LocalDate getDataInstalacao() {
+        return dataInstalacao;
+    }
+
+    public void setDataInstalacao(LocalDate dataInstalacao) {
+        this.dataInstalacao = dataInstalacao;
     }
 
     public LocalDateTime getDataCriacao() {
@@ -111,14 +105,21 @@ public class Usuario {
         this.dataAtualizacao = dataAtualizacao;
     }
 
-    public List<Propriedade> getPropriedades() {
-        return propriedades;
+    public Zona getZona() {
+        return zona;
     }
 
-    public void setPropriedades(List<Propriedade> propriedades) {
-        this.propriedades = propriedades;
+    public void setZona(Zona zona) {
+        this.zona = zona;
     }
 
+    public List<LogAcaoBomba> getLogs() {
+        return logs;
+    }
+
+    public void setLogs(List<LogAcaoBomba> logs) {
+        this.logs = logs;
+    }
 
     @PrePersist
     public void prePersist() {

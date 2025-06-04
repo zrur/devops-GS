@@ -80,6 +80,7 @@ Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025-1 e
 
 ## 🏗️ Arquitetura e Estrutura de Pastas
 
+```text
 src/
 ├── main/
 │   ├── java/
@@ -169,15 +170,15 @@ src/
 │       └── data.sql                  ── (Opcional) scripts de preenchimento inicial do banco
 │
 └── test/
-└── java/
-└── com/
-└── fiap/
-└── aquamind/
-├── controller/   ── • Testes de integração dos endpoints
-├── service/      ── • Testes unitários dos serviços
-└── repository/   ── • Testes de repositório (H2)
+    └── java/
+        └── com/
+            └── fiap/
+                └── aquamind/
+                    ├── controller/   ── • Testes de integração dos endpoints
+                    ├── service/      ── • Testes unitários dos serviços
+                    └── repository/   ── • Testes de repositório (H2)
 
-
+```
 
 ---
 

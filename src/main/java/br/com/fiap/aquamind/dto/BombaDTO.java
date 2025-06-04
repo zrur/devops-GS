@@ -7,21 +7,22 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDate;
 
 /**
- * DTO para a entidade Sensor.
+ * DTO para a entidade Bomba.
  */
-public class SensorDTO {
+public class BombaDTO {
 
     private Long id;
 
     @NotNull(message = "O idZona não pode ser nulo")
     private Long idZona;
 
-    @NotBlank(message = "O tipoSensor não pode ficar em branco")
-    @Size(max = 50, message = "O tipo do sensor deve ter no máximo 50 caracteres")
-    private String tipoSensor; // ex: "umidade", "temperatura", "pressao"
-
+    @NotBlank(message = "O modelo não pode ficar em branco")
     @Size(max = 100, message = "O modelo deve ter no máximo 100 caracteres")
     private String modelo;
+
+    @NotBlank(message = "O status não pode ficar em branco")
+    @Size(max = 20, message = "O status deve ter no máximo 20 caracteres")
+    private String status; // ex: "ligada", "desligada", "manutencao"
 
     @NotNull(message = "O campo ativo não pode ser nulo")
     private Boolean ativo;
@@ -29,20 +30,20 @@ public class SensorDTO {
     @NotNull(message = "A data de instalação não pode ser nula")
     private LocalDate dataInstalacao;
 
-    public SensorDTO() { }
+    public BombaDTO() { }
 
-    public SensorDTO(
+    public BombaDTO(
             Long id,
             Long idZona,
-            String tipoSensor,
             String modelo,
+            String status,
             Boolean ativo,
             LocalDate dataInstalacao
     ) {
         this.id = id;
         this.idZona = idZona;
-        this.tipoSensor = tipoSensor;
         this.modelo = modelo;
+        this.status = status;
         this.ativo = ativo;
         this.dataInstalacao = dataInstalacao;
     }
@@ -63,20 +64,20 @@ public class SensorDTO {
         this.idZona = idZona;
     }
 
-    public String getTipoSensor() {
-        return tipoSensor;
-    }
-
-    public void setTipoSensor(String tipoSensor) {
-        this.tipoSensor = tipoSensor;
-    }
-
     public String getModelo() {
         return modelo;
     }
 
     public void setModelo(String modelo) {
         this.modelo = modelo;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public Boolean getAtivo() {

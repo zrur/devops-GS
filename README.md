@@ -355,6 +355,8 @@ No Auth Controller → `POST /api/auth/register`, envie um JSON como:
 ```
 Clique em Execute.
 
+----------------------
+
 ## Login de Usuario
 
 No Auth Controller → `POST /api/auth/login`, envie um JSON como:
@@ -367,6 +369,8 @@ No Auth Controller → `POST /api/auth/login`, envie um JSON como:
 ```
 Clique em Execute que irá aparecer o (TOKEN) para autenticação.
 
+----------------------
+
 ## “Authorize” no Swagger
 No canto superior direito do Swagger UI, clique no botão Authorize (ícone de cadeado).
 
@@ -375,6 +379,8 @@ No modal que abrir, cole o token obtido com o prefixo Bearer (exemplo: Bearer ey
 Clique em Authorize e depois em Close.
 
 Agora todos os endpoints marcados com ícone de cadeado aceitarão esse token no header Authorization.
+
+----------------------
 
 ## Exemplos de algumas Chamadas CRUD
 
@@ -395,6 +401,8 @@ Body:
 ```
 Clique em Execute e observe o HTTP 200 com o JSON da nova propriedade.
 
+----------------------
+
 ### Criar Estado 
 
 Endpoint: POST /api/estados
@@ -408,6 +416,8 @@ Body:
 }
 ```
 Clique em Execute. Deve retornar HTTP 201 e o JSON do estado criado.
+
+----------------------
 
 ### Criar Zona
 
@@ -426,13 +436,15 @@ Body:
 ```
 Execute → HTTP 201 com JSON da zona.
 
+----------------------
+
 ### Pegar zona:  
 
 Endpoint: GET /api/zonas/{id}
 
 Clicar no botão TRY IT OUT
 
-colocacar o ID
+colocar o ID
 
 Execute → HTTP 201 com JSON da zona.
 
@@ -458,6 +470,78 @@ curl -X 'GET' \
 "ativo": true
 }
 ```
+
+-------
+
+### Atualizar zona:
+
+**Mudamos a zona A para Zona B**
+
+Endpoint: PUT /api/zonas/{id}
+
+Clicar no botão TRY IT OUT
+
+colocar o ID
+
+Execute → HTTP 201 com JSON da zona.
+
+#### Curl
+
+curl -X 'PUT' \
+'http://localhost:8080/api/zonas/1' \
+- -H 'accept: */*' \
+- -H 'Authorization: Bearer (TOKEN)' \
+- -H 'Content-Type: application/json' \
+- -d '{
+- "id": 1,
+- "idPropriedade": 1,
+- "nome": "Zona B",
+- "areaHectares": 1.5,
+- "ativo": true
+- }'
+
+#### Request URL
+
+- http://localhost:8080/api/zonas/1
+
+#### Response body
+
+```json
+{
+   "id": 1,
+   "idPropriedade": 1,
+   "nome": "Zona B",
+   "areaHectares": 1.5,
+   "ativo": true
+}
+```
+--------
+
+### Deletando zona:
+
+**Deletando a Zona de id: 1**
+
+Endpoint: DELETE /api/zonas/{id}
+
+Clicar no botão TRY IT OUT
+
+colocar o ID
+
+Execute → HTTP 204 com JSON da zona.
+
+#### Curl
+
+curl -X 'DELETE' \
+'http://localhost:8080/api/zonas/1' \
+-H 'accept: */*' \
+-H 'Authorization: Bearer (TOKEN)'
+
+#### Request URL
+
+- http://localhost:8080/api/zonas/1
+
+
+---------------------
    
 # 👥 Equipe AquaMind
 

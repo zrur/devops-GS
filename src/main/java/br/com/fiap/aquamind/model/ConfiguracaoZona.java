@@ -1,4 +1,3 @@
-// src/main/java/br/com/fiap/aquamind/model/ConfiguracaoZona.java
 package br.com.fiap.aquamind.model;
 
 import jakarta.persistence.*;
@@ -18,7 +17,8 @@ public class ConfiguracaoZona {
     @Column(name = "id_config")
     private Long id;
 
-    @Column(name = "limite_umidade_min", precision = 5, scale = 2)
+    // Removido precision e scale para não causar conflito em Double
+    @Column(name = "limite_umidade_min", nullable = false)
     private Double limiteUmidadeMin;
 
     @Column(name = "horario_inicio_irriga", length = 5)

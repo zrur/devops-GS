@@ -1,4 +1,3 @@
-// src/main/java/br/com/fiap/aquamind/model/AlertaUmidade.java
 package br.com.fiap.aquamind.model;
 
 import jakarta.persistence.*;
@@ -21,7 +20,8 @@ public class AlertaUmidade {
     @Column(name = "data_hora", nullable = false)
     private LocalDateTime dataHora;
 
-    @Column(name = "umidade_atual", precision = 5, scale = 2, nullable = false)
+    // Removido precision e scale para não causar conflito em Double
+    @Column(name = "umidade_atual", nullable = false)
     private Double umidadeAtual;
 
     @Column(name = "descricao", length = 400)

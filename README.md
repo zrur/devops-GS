@@ -1,260 +1,272 @@
+AquaMind é um sistema inteligente de irrigação voltado para pequenos e médios produtores rurais que desejam otimizar o uso de água em suas plantações. Ele combina sensores de umidade conectados via IoT, uma API backend em Java Spring Boot e um dashboard web para fornecer monitoramento em tempo real das condições do solo, alertas automáticos e controle remoto de bombas de irrigação. O objetivo é reduzir o desperdício de água, melhorar a eficiência na irrigação e permitir que o produtor tome decisões informadas com base em dados históricos e em tempo real.
+
 # AquaMind – Sistema Inteligente de Irrigação
-
-
-> **AquaMind** é uma solução completa para pequenos e médios produtores rurais que desejam monitorar e automatizar a irrigação de suas propriedades, 
-> especialmente em regiões com escassez hídrica. Com integração IoT, backend Java Spring Boot, dashboard web, API REST, segurança JWT e containerização, 
-> o AquaMind oferece eficiência no uso da água, histórico de dados e controle remoto das bombas.
-
----
-
-## 📋 Sumário
-
-1. [Visão Geral](#visão-geral)
-2. [Principais Funcionalidades](#principais-funcionalidades)
-3. [Arquitetura e Estrutura de Pastas](#arquitetura-e-estrutura-de-pastas)
-4. [Entidades de Dominio](#entidades-de-dominio)
-5. [Fluxo de Dados](#fluxo-de-dados)
-6. [Tecnologias Utilizadas](#tecnologias-utilizadas)
-7. [Pré-requisitos](#pré-requisitos)
-8. [Como Executar Localmente](#como-executar-localmente)
-    1. [1. Backend (API Spring Boot)](#1-backend-api-spring-boot)
-    2. [2. Banco de Dados H2](#2-banco-de-dados-h2)
-    3. [3. Frontend Web (Swagger UI)](#3-frontend-web-swagger-ui)
-    4. [4. Execução de Testes](#4-execução-de-testes)
-9. [Rotas Principais da API](#rotas-principais-da-api)
-10. [Exemplos de Uso](#exemplos-de-uso)
-11. [Containerização com Docker (Opcional)](#containerização-com-docker-opcional)
-12. [Contribuição](#contribuição)
+AquaMind é uma solução completa para pequenos e médios produtores rurais que desejam monitorar e automatizar a irrigação de suas propriedades,  
+especialmente em regiões com escassez hídrica. Com integração IoT, backend Java Spring Boot, dashboard web, API REST, segurança JWT e containerização,  
+o AquaMind oferece eficiência no uso da água, histórico de dados e controle remoto das bombas.
 
 ---
 
 ## 🌎 Visão Geral
+O AquaMind foi concebido para enfrentar os desafios da seca e escassez hídrica em áreas agrícolas, oferecendo:
 
-O **AquaMind** foi concebido para enfrentar os desafios da seca e escassez hídrica em áreas agrícolas, oferecendo:
-
-- **Monitoramento em tempo real** da umidade do solo por meio de sensores IoT (ESP32 + sensores capacitivos).
-- **Dashboard Web** para visualizar gráficos históricos de umidade, alertas e status das zonas de plantio.
-- **Controle remoto de irrigação**: acione bombas manualmente ou de forma automática quando a umidade estiver abaixo de um limiar configurado.
-- **Segurança JWT**: autenticação de usuários e proteção de endpoints.
-- **API RESTful** com documentação interativa via Swagger.
-- **Estrutura modular** (Propriedade → Zona → Sensor → Leitura → Irrigação), permitindo futuras expansões (integração com previsão climática, novos sensores, relatórios avançados).
+- Monitoramento em tempo real da umidade do solo por meio de sensores IoT (ESP32 + sensores capacitivos).
+- Dashboard Web para visualizar gráficos históricos de umidade, alertas e status das zonas de plantio.
+- Controle remoto de irrigação: acione bombas manualmente ou de forma automática quando a umidade estiver abaixo de um limiar configurado.
+- Segurança JWT: autenticação de usuários e proteção de endpoints.
+- API RESTful com documentação interativa via Swagger.
+- Estrutura modular (Propriedade → Zona → Sensor → Leitura → Irrigação), permitindo futuras expansões (integração com previsão climática, novos sensores, relatórios avançados).
 
 Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025-1 e visa demonstrar boas práticas de arquitetura, design de API, containerização e DevOps em apenas duas semanas de desenvolvimento.
 
 ---
 
 ## 🚀 Principais Funcionalidades
-
 1. **Autenticação e Autorização**
-    - Cadastro e login de usuários (Produtores) via JWT.
-    - Papéis (“ROLE_USER” e “ROLE_ADMIN”) para controlar acessos.
+   - Cadastro e login de usuários (Produtores) via JWT.
+   - Papéis (“ROLE_USER” e “ROLE_ADMIN”) para controlar acessos.
 
 2. **CRUD de Propriedades Agrícolas**
-    - Cada usuário pode cadastrar múltiplas propriedades (fazendas).
-    - Informações básicas: nome, endereço, coordenadas.
+   - Cada usuário pode cadastrar múltiplas propriedades (fazendas).
+   - Informações básicas: nome, endereço, coordenadas.
 
 3. **Gerenciamento de Zonas de Plantio**
-    - Cada propriedade possui várias zonas (áreas) de cultivo.
-    - Definição de “umidade alvo” para automação.
+   - Cada propriedade possui várias zonas (áreas) de cultivo.
+   - Definição de “umidade alvo” para automação.
 
 4. **Cadastro de Sensores**
-    - Associe sensores (ESP32) a uma zona específica.
-    - Cada sensor publica leituras de umidade via MQTT/HTTP → Node-RED → API.
+   - Associe sensores (ESP32) a uma zona específica.
+   - Cada sensor publica leituras de umidade via MQTT/HTTP → Node-RED → API.
 
 5. **Registro de Leituras de Umidade**
-    - Persistência das leituras no banco relacional (H2/PostgreSQL/Oracle).
-    - Marcação de alertas quando o valor de umidade < umidade alvo da zona.
+   - Persistência das leituras no banco relacional (H2/PostgreSQL/Oracle).
+   - Marcação de alertas quando o valor de umidade < umidade alvo da zona.
 
 6. **Histórico de Irrigação**
-    - Registrar cada acionamento de irrigação (manualmente ou automático).
-    - Informar data/hora de início, fim e volume de água bombeado (litros).
+   - Registrar cada acionamento de irrigação (manualmente ou automático).
+   - Informar data/hora de início, fim e volume de água bombeado (litros).
 
 7. **Dashboard Web (Swagger / futuros Web UI)**
-    - Documentação interativa (Swagger UI) para testar e visualizar todos os endpoints.
-    - Em versões futuras, um front-end em React ou Next.js pode consumir esta API para exibir gráficos dinâmicos.
+   - Documentação interativa (Swagger UI) para testar e visualizar todos os endpoints.
+   - Em versões futuras, um front-end em React ou Next.js pode consumir esta API para exibir gráficos dinâmicos.
 
 8. **Tratamento Global de Exceções**
-    - Erros padronizados (`404 Not Found`, `400 Bad Request`, `401 Unauthorized`) via `GlobalExceptionHandler`.
+   - Erros padronizados (404 Not Found, 400 Bad Request, 401 Unauthorized) via GlobalExceptionHandler.
 
 ---
 
 ## 🏗️ Arquitetura e Estrutura de Pastas
 
-```text
+```
+
 src/
 ├── main/
 │   ├── java/
-│   │   └── com/
-│   │       └── fiap/
-│   │           └── aquamind/
-│   │               ├── AquamindApplication.java
-│   │               │   └── • Classe principal do Spring Boot
-│   │               │
-│   │               ├── config/
-│   │               │   ├── CorsConfig.java
-│   │               │   │   └── • Configuração global de CORS
-│   │               │   │
-│   │               │   ├── SecurityConfig.java
-│   │               │   │   └── • HTTP Basic / JWT / roles / autorizações
-│   │               │   │
-│   │               │   └── SwaggerConfig.java
-│   │               │       └── • Personalização da documentação OpenAPI (Swagger)
-│   │               │
-│   │               ├── controller/
-│   │               │   ├── AuthController.java
-│   │               │   │   └── • Registro e login (JWT)
-│   │               │   │
-│   │               │   ├── PropriedadeController.java
-│   │               │   │   └── • CRUD de Propriedades
-│   │               │   │
-│   │               │   ├── ZonaController.java
-│   │               │   │   └── • CRUD de Zonas
-│   │               │   │
-│   │               │   ├── SensorController.java
-│   │               │   │   └── • CRUD de Sensores
-│   │               │   │
-│   │               │   ├── LeituraController.java
-│   │               │   │   └── • Persistência de Leituras
-│   │               │   │
-│   │               │   └── IrrigacaoController.java
-│   │               │       └── • Histórico de Irrigação
-│   │               │
-│   │               ├── dto/
-│   │               │   ├── auth/
-│   │               │   │   ├── LoginRequest.java
-│   │               │   │   ├── RegisterRequest.java
-│   │               │   │   └── AuthResponse.java
-│   │               │   │
-│   │               │   ├── PropriedadeDTO.java
-│   │               │   ├── ZonaDTO.java
-│   │               │   ├── SensorDTO.java
-│   │               │   ├── LeituraDTO.java
-│   │               │   └── IrrigacaoDTO.java
-│   │               │
-│   │               ├── model/
-│   │               │   ├── Usuario.java
-│   │               │   ├── Propriedade.java
-│   │               │   ├── Zona.java
-│   │               │   ├── Sensor.java
-│   │               │   ├── Leitura.java
-│   │               │   └── Irrigacao.java
-│   │               │
-│   │               ├── repository/
-│   │               │   ├── UsuarioRepository.java
-│   │               │   ├── PropriedadeRepository.java
-│   │               │   ├── ZonaRepository.java
-│   │               │   ├── SensorRepository.java
-│   │               │   ├── LeituraRepository.java
-│   │               │   └── IrrigacaoRepository.java
-│   │               │
-│   │               ├── service/
-│   │               │   ├── AuthService.java
-│   │               │   ├── PropriedadeService.java
-│   │               │   ├── ZonaService.java
-│   │               │   ├── SensorService.java
-│   │               │   ├── LeituraService.java
-│   │               │   └── IrrigacaoService.java
-│   │               │
-│   │               ├── security/
-│   │               │   ├── JwtUtil.java
-│   │               │   ├── JwtAuthenticationFilter.java
-│   │               │   └── CustomUserDetailsService.java
-│   │               │
-│   │               └── exception/
-│   │                   ├── GlobalExceptionHandler.java
-│   │                   ├── ResourceNotFoundException.java
-│   │                   └── BadRequestException.java
+│   │   └── br/
+│   │       └── com/
+│   │           └── fiap/
+│   │               └── aquamind/
+│   │                   ├── AquaMindApplication.java
+│   │                   │   └── • Classe principal do Spring Boot
+│   │                   │
+│   │                   ├── config/
+│   │                   │   ├── CorsConfig.java
+│   │                   │   │   └── • Configuração global de CORS
+│   │                   │   │
+│   │                   │   ├── SecurityConfig.java
+│   │                   │   │   └── • Configurações de Spring Security (JWT, roles, etc.)
+│   │                   │   │
+│   │                   │   └── SwaggerConfig.java
+│   │                   │       └── • Customização da documentação OpenAPI (Swagger)
+│   │                   │
+│   │                   ├── controller/
+│   │                   │   ├── AlertaUmidadeController.java
+│   │                   │   │   └── • CRUD de Alertas de Umidade (usa AlertaUmidadeDTO)
+│   │                   │   │
+│   │                   │   ├── AuthController.java
+│   │                   │   │   └── • Endpoints de login e registro (JWT)
+│   │                   │   │
+│   │                   │   ├── BombaController.java
+│   │                   │   │   └── • CRUD de Bombas (usa BombaDTO)
+│   │                   │   │
+│   │                   │   ├── ConfiguracaoZonaController.java
+│   │                   │   │   └── • CRUD de Configurações de Zona (usa ConfiguracaoZonaDTO)
+│   │                   │   │
+│   │                   │   ├── EstadoController.java
+│   │                   │   │   └── • CRUD de Estados (usa EstadoDTO)
+│   │                   │   │
+│   │                   │   ├── HistoricoAcaoUsuarioController.java
+│   │                   │   │   └── • CRUD de Histórico de Ações de Usuário (usa HistoricoAcaoUsuarioDTO)
+│   │                   │   │
+│   │                   │   ├── IrrigacaoController.java
+│   │                   │   │   └── • CRUD de Irrigações (usa IrrigacaoDTO)
+│   │                   │   │
+│   │                   │   ├── LogAcaoBombaController.java
+│   │                   │   │   └── • CRUD de Logs de Ação de Bomba (usa LogAcaoBombaDTO)
+│   │                   │   │
+│   │                   │   ├── PropriedadeController.java
+│   │                   │   │   └── • CRUD de Propriedades (usa PropriedadeDTO)
+│   │                   │   │
+│   │                   │   ├── RegistroSensorController.java
+│   │                   │   │   └── • CRUD de Leituras de Sensor (usa RegistroSensorDTO)
+│   │                   │   │
+│   │                   │   ├── SensorController.java
+│   │                   │   │   └── • CRUD de Sensores (usa SensorDTO)
+│   │                   │   │
+│   │                   │   ├── UsuarioController.java
+│   │                   │   │   └── • CRUD de Usuários (usa UsuarioDTO)
+│   │                   │   │
+│   │                   │   └── ZonaController.java
+│   │                   │       └── • CRUD de Zonas (usa ZonaDTO)
+│   │                   │
+│   │                   ├── dto/
+│   │                   │   ├── AlertaUmidadeDTO.java
+│   │                   │   ├── BombaDTO.java
+│   │                   │   ├── ConfiguracaoZonaDTO.java
+│   │                   │   ├── EstadoDTO.java
+│   │                   │   ├── HistoricoAcaoUsuarioDTO.java
+│   │                   │   ├── IrrigacaoDTO.java
+│   │                   │   ├── LogAcaoBombaDTO.java
+│   │                   │   ├── PropriedadeDTO.java
+│   │                   │   ├── RegistroSensorDTO.java
+│   │                   │   ├── SensorDTO.java
+│   │                   │   ├── UsuarioDTO.java
+│   │                   │   └── ZonaDTO.java
+│   │                   │       └── • Cada DTO converte entre entidade e JSON
+│   │                   │
+│   │                   ├── exception/
+│   │                   │   ├── BadRequestException.java
+│   │                   │   │   └── • Exceção para requisições inválidas (HTTP 400)
+│   │                   │   │
+│   │                   │   ├── ErrorResponse.java
+│   │                   │   │   └── • Formato padrão de resposta de erro
+│   │                   │   │
+│   │                   │   ├── GlobalExceptionHandler.java
+│   │                   │   │   └── • Trata exceções globalmente e retorna JSON adequado
+│   │                   │   │
+│   │                   │   └── ResourceNotFoundException.java
+│   │                   │       └── • Exceção para recurso não encontrado (HTTP 404)
+│   │                   │
+│   │                   ├── model/
+│   │                   │   ├── AlertaUmidade.java
+│   │                   │   ├── Bomba.java
+│   │                   │   ├── ConfiguracaoZona.java
+│   │                   │   ├── Estado.java
+│   │                   │   ├── HistoricoAcaoUsuario.java
+│   │                   │   ├── Irrigacao.java
+│   │                   │   ├── LogAcaoBomba.java
+│   │                   │   ├── Propriedade.java
+│   │                   │   ├── RegistroSensor.java
+│   │                   │   ├── Sensor.java
+│   │                   │   ├── Usuario.java
+│   │                   │   └── Zona.java
+│   │                   │       └── • Entidades JPA com anotações @Entity, @OneToMany, etc.
+│   │                   │
+│   │                   ├── repository/
+│   │                   │   ├── AlertaUmidadeRepository.java
+│   │                   │   ├── BombaRepository.java
+│   │                   │   ├── ConfiguracaoZonaRepository.java
+│   │                   │   ├── EstadoRepository.java
+│   │                   │   ├── HistoricoAcaoUsuarioRepository.java
+│   │                   │   ├── IrrigacaoRepository.java
+│   │                   │   ├── LogAcaoBombaRepository.java
+│   │                   │   ├── PropriedadeRepository.java
+│   │                   │   ├── RegistroSensorRepository.java
+│   │                   │   ├── SensorRepository.java
+│   │                   │   ├── UsuarioRepository.java
+│   │                   │   └── ZonaRepository.java
+│   │                   │       └── • Interfaces estendendo JpaRepository<Entidade, Long>
+│   │                   │
+│   │                   ├── security/
+│   │                   │   ├── CustomUserDetailsService.java
+│   │                   │   │   └── • Carrega usuário (UserDetails) para Spring Security
+│   │                   │   │
+│   │                   │   ├── JwtAuthenticationFilter.java
+│   │                   │   │   └── • Filtro que extrai/valida JWT em cada requisição
+│   │                   │   │
+│   │                   │   └── JwtUtil.java
+│   │                   │       └── • Utilitário para gerar/parsear/validar tokens JWT
+│   │                   │
+│   │                   └── service/
+│   │                       ├── AlertaUmidadeService.java
+│   │                       ├── AuthService.java
+│   │                       ├── BombaService.java
+│   │                       ├── ConfiguracaoZonaService.java
+│   │                       ├── EstadoService.java
+│   │                       ├── HistoricoAcaoUsuarioService.java
+│   │                       ├── IrrigacaoService.java
+│   │                       ├── LogAcaoBombaService.java
+│   │                       ├── PropriedadeService.java
+│   │                       ├── RegistroSensorService.java
+│   │                       ├── SensorService.java
+│   │                       ├── UsuarioService.java
+│   │                       └── ZonaService.java
+│   │                           └── • Cada serviço implementa a lógica de negócio (CRUD, validações, etc.)
 │   │
 │   └── resources/
-│       ├── application.properties   ── • Configurações de conexão, JPA, H2, JWT, etc.
-│       └── data.sql                  ── (Opcional) scripts de preenchimento inicial do banco
-│
+│       ├── static/                    ── • (vazio ou arquivos estáticos, se houver)
+│       ├── templates/                 ── • (vazio ou templates Thymeleaf, se houver)
+│       ├── application.properties     ── • Configurações de conexão, JPA, H2, JWT, etc.
+│       └── data.sql                   ── • (Opcional) scripts de inicialização do banco
 └── test/
-    └── java/
-        └── com/
-            └── fiap/
-                └── aquamind/
-                    ├── controller/   ── • Testes de integração dos endpoints
-                    ├── service/      ── • Testes unitários dos serviços
-                    └── repository/   ── • Testes de repositório (H2)
+└── java/
+└── br/
+└── com/
+└── fiap/
+└── aquamind/
+├── controller/   ── • Testes de integração dos endpoints
+├── service/      ── • Testes unitários dos serviços
+└── repository/   ── • Testes de repositório (H2)
 
 ```
+
 
 ---
 
 ## 📦 Entidades de Domínio
+**Usuario**
+- **Campos:** `id`, `nome`, `email`, `senha (BCrypt)`, `perfis (List<String>)`, `propriedades (List<Propriedade>)`.
+- **Relacionamentos:** 1:N para **Propriedade**.
 
-1. **Usuario**
-    - Campos: `id`, `nome`, `email`, `senha` (BCrypt), `perfis (List<String>)`, `propriedades (List<Propriedade>)`.
-    - Relacionamentos: 1:N para Propriedade.
+**Propriedade**
+- **Campos:** `id`, `nome`, `endereco`, `usuario (N:1)`, `zonas (List<Zona>)`.
+- **Relacionamentos:** N:1 para **Usuario**, 1:N para **Zona**.
 
-2. **Propriedade**
-    - Campos: `id`, `nome`, `endereco`, `usuario (N:1)`, `zonas (List<Zona>)`.
-    - Relacionamentos: N:1 para Usuario, 1:N para Zona.
+**Zona**
+- **Campos:** `id`, `nome`, `umidadeAlvo`, `propriedade (N:1)`, `sensores (List<Sensor>)`, `irrigacoes (List<Irrigacao>)`.
+- **Relacionamentos:** N:1 para **Propriedade**, 1:N para **Sensor** e **Irrigacao**.
 
-3. **Zona**
-    - Campos: `id`, `nome`, `localizacao`, `umidadeAlvo`, `propriedade (N:1)`, `sensores (List<Sensor>)`, `irrigacoes (List<Irrigacao>)`.
-    - Relacionamentos: N:1 para Propriedade, 1:N para Sensor e Irrigacao.
+**Sensor**
+- **Campos:** `id`, `tipoSensor`, `modelo`, `zona (N:1)`, `leituras (List<Leitura>)`.
+- **Relacionamentos:** N:1 para **Zona**, 1:N para **Leitura**.
 
-4. **Sensor**
-    - Campos: `id`, `nome`, `zona (N:1)`, `leituras (List<Leitura>)`.
-    - Relacionamentos: N:1 para Zona, 1:N para Leitura.
+**Leitura**
+- **Campos:** `id`, `sensor (N:1)`, `umidade (Double)`, `timestamp (LocalDateTime)`, `alerta (Boolean)`.
+- **Relacionamentos:** N:1 para **Sensor**.
 
-5. **Leitura**
-    - Campos: `id`, `sensor (N:1)`, `umidade (Double)`, `timestamp (LocalDateTime)`, `alerta (Boolean)`.
-    - Relacionamentos: N:1 para Sensor.
-
-6. **Irrigacao**
-    - Campos: `id`, `zona (N:1)`, `dataHoraInicio`, `dataHoraFim`, `volumeAgua (Double)`.
-    - Relacionamentos: N:1 para Zona.
-
----
-
-## 🔄 Fluxo de Dados
-
-1. **Sensor (ESP32) → MQTT / HTTP → Node-RED**
-    - O ESP32 coleta umidade do solo e publica JSON em tópico MQTT:
-      ```json
-      {
-        "sensorId": 1,
-        "umidade": 45.3,
-        "timestamp": "2025-06-01T10:00:00"
-      }
-      ```
-    - Node-RED recebe, mapeia e faz POST em `/api/leituras` (API Java).
-
-2. **API Java (Spring Boot)**
-    - Valida payload via Bean Validation (`@Valid @RequestBody LeituraDTO`).
-    - Persiste no banco (`LeituraRepository.save(...)`).
-    - Calcula `alerta = (umidade < sensor.getZona().getUmidadeAlvo())` e armazena no campo `alerta`.
-
-3. **Dashboard / Cliente**
-    - (Futuro front-end React ou Dashboard Web) consome endpoints seguros (JWT) para listar zonas e leituras:
-        - `GET /api/zonas` → Lista de zonas do usuário.
-        - `GET /api/leituras/sensor/{sensorId}?period={dias}` → Histórico de leituras.
-    - Botão **Acionar Bomba** dispara POST em `/api/irrigacoes` com `zonaId`, e a API cria registro de irrigação (dataHoraInicio, dataHoraFim simulado/apenas marcando histórico).
+**Irrigacao**
+- **Campos:** `id`, `zona (N:1)`, `dataHoraInicio`, `dataHoraFim`, `volumeAgua (Double)`.
+- **Relacionamentos:** N:1 para **Zona**.
 
 ---
 
 ## 💻 Tecnologias Utilizadas
-
-- **Linguagem**: Java 21
-- **Framework**: Spring Boot 3.5.0
-    - Modules: Web, Data JPA, Security, Validation
-- **Banco de Dados**: H2 (em memória) → fácil setup para testes.
-- **Persistência**: Spring Data JPA (Hibernate)
-- **Autenticação**: JWT (io.jsonwebtoken:jjwt) + Spring Security
-- **Documentação**: SpringDoc OpenAPI (Swagger UI)
-- **Validação**: Bean Validation (jakarta.validation)
-- **Lombok**: Redução de boilerplate (getters, setters, construtores)
-- **MQTT / Node-RED**: Processamento de leituras IoT
-- **Containerização (Opcional)**: Docker & Docker Compose
-- **Testes**: JUnit 5 + Spring Boot Test + Spring Security Test
+- **Linguagem:** Java 21
+- **Framework:** Spring Boot 3.5.0
+   - Módulos: Web, Data JPA, Security, Validation
+- **Banco de Dados:** H2 (em memória) → fácil setup para testes.
+- **Persistência:** Spring Data JPA (Hibernate)
+- **Autenticação:** JWT (io.jsonwebtoken:jjwt) + Spring Security
+- **Documentação:** SpringDoc OpenAPI (Swagger UI)
+- **Validação:** Bean Validation (jakarta.validation)
+- **Lombok:** Redução de boilerplate (getters, setters, construtores)
+- **MQTT / Node-RED:** Processamento de leituras IoT
+- **Containerização (Opcional):** Docker & Docker Compose
+- **Testes:** JUnit 5 + Spring Boot Test + Spring Security Test
 
 ---
 
 ## 📋 Pré-requisitos
-
 - JDK 21 instalado
 - Gradle (wrapper incluído no projeto)
 - Git
@@ -264,10 +276,41 @@ src/
 ---
 
 ## ▶️ Como Executar Localmente
-
-### 1. Backend (API Spring Boot)
-
-1. **Clone o repositório**
+1. **Backend (API Spring Boot)**  
+   Clone o repositório:
    ```bash
    git clone https://github.com/Danie-Anx/AquaMind-Java.git
    cd AquaMind-Java
+
+
+🔗 Rotas Principais da API
+
+| Método | Caminho                    | Descrição                                |
+| ------ |----------------------------| ---------------------------------------- |
+| POST   | `/api/auth/register`       | Registrar novo usuário (JWT)             |
+| POST   | `/api/auth/login`          | Fazer login e obter token JWT            |
+| GET    | `/api/propriedades`        | Listar propriedades do usuário           |
+| GET    | `/api/propriedades/{id}`   | Obter detalhes de uma propriedade        |
+| POST   | `/api/propriedades`        | Criar nova propriedade                   |
+| PUT    | `/api/propriedades/{id}`   | Atualizar propriedade                    |
+| DELETE | `/api/propriedades/{id}`   | Deletar propriedade                      |
+| GET    | `/api/zonas`               | Listar zonas                             |
+| GET    | `/api/zonas/{id}`          | Obter detalhes da zona                   |
+| POST   | `/api/zonas`               | Criar nova zona                          |
+| PUT    | `/api/zonas/{id}`          | Atualizar zona                           |
+| DELETE | `/api/zonas/{id}`          | Deletar zona                             |
+| GET    | `/api/sensores`            | Listar sensores                          |
+| GET    | `/api/sensores/{id}`       | Obter detalhes do sensor                 |
+| POST   | `/api/sensores`            | Criar novo sensor                        |
+| PUT    | `/api/sensores/{id}`       | Atualizar sensor                         |
+| DELETE | `/api/sensores/{id}`       | Deletar sensor                           |
+| GET    | `/api/RegistraSensor`      | Listar leituras de sensores              |
+| GET    | `/api/RegistraSensor/{id}` | Obter leitura específica                 |
+| POST   | `/api/RegistraSensor`      | Registrar nova leitura                   |
+| PUT    | `/api/RegistraSensor/{id}` | Atualizar leitura existente              |
+| DELETE | `/api/RegistraSensor/{id}` | Deletar leitura                          |
+| GET    | `/api/irrigacoes`          | Listar histórico de irrigações           |
+| GET    | `/api/irrigacoes/{id}`     | Obter detalhes de irrigação              |
+| POST   | `/api/irrigacoes`          | Criar novo registro de irrigação         |
+| PUT    | `/api/irrigacoes/{id}`     | Atualizar irrigação existente            |
+| DELETE | `/api/irrigacoes/{id}`     | Deletar irrigação                        |

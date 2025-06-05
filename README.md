@@ -1,6 +1,7 @@
+# AquaMind – Sistema Inteligente de Irrigação
+
 AquaMind é um sistema inteligente de irrigação voltado para pequenos e médios produtores rurais que desejam otimizar o uso de água em suas plantações. Ele combina sensores de umidade conectados via IoT, uma API backend em Java Spring Boot e um dashboard web para fornecer monitoramento em tempo real das condições do solo, alertas automáticos e controle remoto de bombas de irrigação. O objetivo é reduzir o desperdício de água, melhorar a eficiência na irrigação e permitir que o produtor tome decisões informadas com base em dados históricos e em tempo real.
 
-# AquaMind – Sistema Inteligente de Irrigação
 AquaMind é uma solução completa para pequenos e médios produtores rurais que desejam monitorar e automatizar a irrigação de suas propriedades,  
 especialmente em regiões com escassez hídrica. Com integração IoT, backend Java Spring Boot, dashboard web, API REST, segurança JWT e containerização,  
 o AquaMind oferece eficiência no uso da água, histórico de dados e controle remoto das bombas.
@@ -8,6 +9,7 @@ o AquaMind oferece eficiência no uso da água, histórico de dados e controle r
 ---
 
 ## 🌎 Visão Geral
+
 O AquaMind foi concebido para enfrentar os desafios da seca e escassez hídrica em áreas agrícolas, oferecendo:
 
 - Monitoramento em tempo real da umidade do solo por meio de sensores IoT (ESP32 + sensores capacitivos).
@@ -22,6 +24,7 @@ Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025 e v
 ---
 
 ## 🚀 Principais Funcionalidades
+
 1. **Autenticação e Autorização**
    - Cadastro e login de usuários (Produtores) via JWT.
    - Papéis (“ROLE_USER” e “ROLE_ADMIN”) para controlar acessos.
@@ -52,6 +55,21 @@ Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025 e v
 
 8. **Tratamento Global de Exceções**
    - Erros padronizados (404 Not Found, 400 Bad Request, 401 Unauthorized) via GlobalExceptionHandler.
+
+---
+
+## 🔗 Link para Documentação Interativa (Swagger UI)
+
+Assim que a aplicação estiver rodando (porta 8080 por padrão), abra no navegador:
+
+> **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
+
+Lá você encontrará todos os endpoints agrupados por controller, poderá preencher parâmetros, clicar em **Try it out** e ver as respostas (com exemplo de cURL, payloads, headers etc.).  
+
+
+Para endpoints protegidos, clique em **Authorize** (ícone de cadeado no canto superior direito) e insira:
+
+#### **Bearer <seu_token_JWT_obtido_no_login>**
 
 ---
 
@@ -314,3 +332,137 @@ src/
 | POST   | `/api/irrigacoes`          | Criar novo registro de irrigação         |
 | PUT    | `/api/irrigacoes/{id}`     | Atualizar irrigação existente            |
 | DELETE | `/api/irrigacoes/{id}`     | Deletar irrigação                        |
+
+### Observações:
+
+- **"O header Authorization: Bearer {token} deve ser enviado em todas as chamadas após o login."**
+- **"Cada rota de CRUD segue as boas práticas REST (status codes 200/201/204/400/401/403/404)."**
+
+# Testes Manuais via Swagger UI
+
+## Registrar Usuário e Obter Token
+
+No Auth Controller → `POST /api/auth/register`, envie um JSON como:
+
+```json
+{
+   "nome": "daniel",
+   "email": "daniel@gmail.com",
+   "senha": "daniel12345",
+   "tipoUsuario": "ROLE_USER",
+   "ativo": true
+}
+```
+Clique em Execute.
+
+## Login de Usuario
+
+No Auth Controller → `POST /api/auth/login`, envie um JSON como:
+
+```json
+{
+   "email": "daniel@gmail.com",
+   "senha": "daniel12345"
+}
+```
+Clique em Execute.
+
+## “Authorize” no Swagger
+No canto superior direito do Swagger UI, clique no botão Authorize (ícone de cadeado).
+
+No modal que abrir, cole o token obtido com o prefixo Bearer (exemplo: Bearer eyJhbGciOiJI...).
+
+Clique em Authorize e depois em Close.
+
+Agora todos os endpoints marcados com ícone de cadeado aceitarão esse token no header Authorization.
+
+## Exemplos de Chamadas CRUD
+
+### Criar Propriedade
+
+Endpoint: POST /api/propriedades
+
+Body:
+
+```json
+{
+   "nome": "Fazenda Sol",
+   "idUsuario": 1,
+   "idEstado": 1,
+   "areaHectares": 10.0,
+   "ativo": true
+}
+```
+Clique em Execute e observe o HTTP 200 com o JSON da nova propriedade.
+
+### Criar Estado 
+
+Endpoint: POST /api/estados
+
+Body:
+
+```json
+{
+   "nome": "São Paulo",
+   "sigla": "SP"
+}
+```
+Clique em Execute. Deve retornar HTTP 201 e o JSON do estado criado.
+
+### Criar Zona
+
+Endpoint: POST /api/zonas
+
+Body:
+
+```json
+{
+   "idPropriedade": 1,
+   "nome": "Zona A",
+   "areaHectares": 1.5, 
+   "ativo": true
+}
+
+```
+Execute → HTTP 201 com JSON da zona.
+
+### Pegar zona:  
+
+Endpoint: GET /api/zonas/{id}
+
+Clicar no botão TRY IT OUT
+
+colocacar o ID
+
+Execute → HTTP 201 com JSON da zona.
+
+#### Curl
+
+curl -X 'GET' \
+- 'http://localhost:8080/api/zonas/1' \
+- -H 'accept: */*' \
+- -H 'Authorization: Bearer (TOKEN)'
+
+#### Request URL
+
+- http://localhost:8080/api/zonas/1
+
+#### Response body
+
+```json
+{
+"id": 1,
+"idPropriedade": 1,
+"nome": "Zona A",
+"areaHectares": 1.5,
+"ativo": true
+}
+```
+   
+# 👥 Equipe AquaMind
+
+- Robert Daniel da Silva Coimbra - RM555881 – Desenvolvedor Full Stack
+
+- Marcos Antonio Ramalho Neto - RM554611 – Arquiteto de Solução / UX Designer
+
+- Arthur Ramos Dos Santos - RM558798 – Desenvolvedor Full Stack / DevOps

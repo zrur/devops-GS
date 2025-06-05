@@ -365,7 +365,7 @@ No Auth Controller → `POST /api/auth/login`, envie um JSON como:
    "senha": "daniel12345"
 }
 ```
-Clique em Execute.
+Clique em Execute que irá aparecer o (TOKEN) para autenticação.
 
 ## “Authorize” no Swagger
 No canto superior direito do Swagger UI, clique no botão Authorize (ícone de cadeado).

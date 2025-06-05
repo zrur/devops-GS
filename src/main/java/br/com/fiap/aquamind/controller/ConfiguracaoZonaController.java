@@ -1,86 +1,74 @@
-// src/main/java/br/com/fiap/aquamind/controller/ConfiguracaoZonaController.java
 package br.com.fiap.aquamind.controller;
 
 import br.com.fiap.aquamind.dto.ConfiguracaoZonaDTO;
-import br.com.fiap.aquamind.exception.ResourceNotFoundException;
-import br.com.fiap.aquamind.model.ConfiguracaoZona;
-import br.com.fiap.aquamind.model.Zona;
-import br.com.fiap.aquamind.repository.ConfiguracaoZonaRepository;
-import br.com.fiap.aquamind.repository.ZonaRepository;
+import br.com.fiap.aquamind.service.ConfiguracaoZonaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Endpoints REST para CRUD de ConfiguracaoZona, usando DTO.
+ * Endpoints REST para CRUD de ConfiguracaoZona, agora usando ConfiguracaoZonaService.
  */
 @RestController
 @RequestMapping("/api/config-zona")
 public class ConfiguracaoZonaController {
 
     @Autowired
-    private ConfiguracaoZonaRepository configRepository;
+    private ConfiguracaoZonaService configuracaoZonaService;
 
-    @Autowired
-    private ZonaRepository zonaRepository;
-
+    /**
+     * GET /api/config-zona
+     * Retorna todas as configurações de zona como DTOs.
+     */
     @GetMapping
     public List<ConfiguracaoZonaDTO> listarTodas() {
-        List<ConfiguracaoZona> lista = configRepository.findAll();
-        return lista.stream()
-                .map(ConfiguracaoZonaDTO::fromEntity)
-                .collect(Collectors.toList());
+        return configuracaoZonaService.listarTodas();
     }
 
+    /**
+     * GET /api/config-zona/{id}
+     * Busca uma configuração de zona por ID; se não existir, o service lança ResourceNotFoundException.
+     */
     @GetMapping("/{id}")
     public ConfiguracaoZonaDTO buscarPorId(@PathVariable Long id) {
-        ConfiguracaoZona cz = configRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Configuração não encontrada com id = " + id));
-        return ConfiguracaoZonaDTO.fromEntity(cz);
+        return configuracaoZonaService.buscarPorId(id);
     }
 
+    /**
+     * POST /api/config-zona
+     * Cria uma nova configuração de zona a partir de um DTO válido.
+     */
     @PostMapping
-    public ResponseEntity<ConfiguracaoZonaDTO> criar(@Valid @RequestBody ConfiguracaoZonaDTO novoDTO) {
-        Zona zona = zonaRepository.findById(novoDTO.getIdZona())
-                .orElseThrow(() -> new ResourceNotFoundException("Zona não encontrada com id = " + novoDTO.getIdZona()));
-
-        ConfiguracaoZona cz = novoDTO.toEntity();
-        cz.setZona(zona);
-
-        ConfiguracaoZona salvo = configRepository.save(cz);
-        ConfiguracaoZonaDTO respostaDTO = ConfiguracaoZonaDTO.fromEntity(salvo);
-        return ResponseEntity.status(201).body(respostaDTO);
+    public ResponseEntity<ConfiguracaoZonaDTO> criar(
+            @Valid @RequestBody ConfiguracaoZonaDTO novoDTO
+    ) {
+        ConfiguracaoZonaDTO criado = configuracaoZonaService.criar(novoDTO);
+        return ResponseEntity.status(201).body(criado);
     }
 
+    /**
+     * PUT /api/config-zona/{id}
+     * Atualiza uma configuração de zona existente. Se não existir, o service lança ResourceNotFoundException.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ConfiguracaoZonaDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody ConfiguracaoZonaDTO dtoAtualizado
     ) {
-        ConfiguracaoZona existente = configRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Configuração não encontrada com id = " + id));
-
-        Zona zona = zonaRepository.findById(dtoAtualizado.getIdZona())
-                .orElseThrow(() -> new ResourceNotFoundException("Zona não encontrada com id = " + dtoAtualizado.getIdZona()));
-
-        existente = dtoAtualizado.updateEntity(existente);
-        existente.setZona(zona);
-
-        ConfiguracaoZona atualizado = configRepository.save(existente);
-        ConfiguracaoZonaDTO respostaDTO = ConfiguracaoZonaDTO.fromEntity(atualizado);
-        return ResponseEntity.ok(respostaDTO);
+        ConfiguracaoZonaDTO atualizado = configuracaoZonaService.atualizar(id, dtoAtualizado);
+        return ResponseEntity.ok(atualizado);
     }
 
+    /**
+     * DELETE /api/config-zona/{id}
+     * Deleta uma configuração de zona. Se não existir, o service lança ResourceNotFoundException.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        ConfiguracaoZona existente = configRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Configuração não encontrada com id = " + id));
-
-        configRepository.delete(existente);
+        configuracaoZonaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,89 +1,72 @@
 package br.com.fiap.aquamind.controller;
 
 import br.com.fiap.aquamind.dto.ZonaDTO;
-import br.com.fiap.aquamind.exception.ResourceNotFoundException;
-import br.com.fiap.aquamind.model.Propriedade;
-import br.com.fiap.aquamind.model.Zona;
-import br.com.fiap.aquamind.repository.PropriedadeRepository;
-import br.com.fiap.aquamind.repository.ZonaRepository;
+import br.com.fiap.aquamind.service.ZonaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Endpoints REST para CRUD de Zona, usando DTO.
+ * Endpoints REST para CRUD de Zona, agora usando ZonaService.
  */
 @RestController
 @RequestMapping("/api/zonas")
 public class ZonaController {
 
     @Autowired
-    private ZonaRepository zonaRepository;
+    private ZonaService zonaService;
 
-    @Autowired
-    private PropriedadeRepository propriedadeRepository;
-
+    /**
+     * GET /api/zonas
+     * Lista todas as zonas como DTOs.
+     */
     @GetMapping
     public List<ZonaDTO> listarTodas() {
-        List<Zona> lista = zonaRepository.findAll();
-        return lista.stream()
-                .map(ZonaDTO::fromEntity)
-                .collect(Collectors.toList());
+        return zonaService.listarTodas();
     }
 
+    /**
+     * GET /api/zonas/{id}
+     * Busca uma zona por ID. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @GetMapping("/{id}")
     public ZonaDTO buscarPorId(@PathVariable Long id) {
-        Zona z = zonaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Zona não encontrada com id = " + id));
-        return ZonaDTO.fromEntity(z);
+        return zonaService.buscarPorId(id);
     }
 
+    /**
+     * POST /api/zonas
+     * Cria uma nova zona a partir de DTO válido. Retorna 201 Created com o DTO criado.
+     */
     @PostMapping
     public ResponseEntity<ZonaDTO> criar(@Valid @RequestBody ZonaDTO novaDTO) {
-        Propriedade prop = propriedadeRepository.findById(novaDTO.getIdPropriedade())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Propriedade não encontrada com id = " + novaDTO.getIdPropriedade()
-                ));
-
-        Zona z = novaDTO.toEntity();
-        z.setPropriedade(prop);
-
-        Zona salvo = zonaRepository.save(z);
-        ZonaDTO respostaDTO = ZonaDTO.fromEntity(salvo);
-        return ResponseEntity.status(201).body(respostaDTO);
+        ZonaDTO criado = zonaService.criar(novaDTO);
+        return ResponseEntity.status(201).body(criado);
     }
 
+    /**
+     * PUT /api/zonas/{id}
+     * Atualiza uma zona existente. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<ZonaDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody ZonaDTO dtoAtualizado
     ) {
-        Zona existente = zonaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Zona não encontrada com id = " + id));
-
-        Propriedade prop = propriedadeRepository.findById(dtoAtualizado.getIdPropriedade())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Propriedade não encontrada com id = " + dtoAtualizado.getIdPropriedade()
-                ));
-
-        existente = dtoAtualizado.updateEntity(existente);
-        existente.setPropriedade(prop);
-
-        Zona atualizado = zonaRepository.save(existente);
-        ZonaDTO respostaDTO = ZonaDTO.fromEntity(atualizado);
-        return ResponseEntity.ok(respostaDTO);
+        ZonaDTO atualizado = zonaService.atualizar(id, dtoAtualizado);
+        return ResponseEntity.ok(atualizado);
     }
 
+    /**
+     * DELETE /api/zonas/{id}
+     * Deleta uma zona existente. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        Zona existente = zonaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Zona não encontrada com id = " + id));
-
-        zonaRepository.delete(existente);
+        zonaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

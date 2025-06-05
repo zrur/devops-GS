@@ -1,86 +1,75 @@
-// src/main/java/br/com/fiap/aquamind/controller/HistoricoAcaoUsuarioController.java
 package br.com.fiap.aquamind.controller;
 
 import br.com.fiap.aquamind.dto.HistoricoAcaoUsuarioDTO;
-import br.com.fiap.aquamind.exception.ResourceNotFoundException;
-import br.com.fiap.aquamind.model.HistoricoAcaoUsuario;
-import br.com.fiap.aquamind.model.Usuario;
-import br.com.fiap.aquamind.repository.HistoricoAcaoUsuarioRepository;
-import br.com.fiap.aquamind.repository.UsuarioRepository;
+import br.com.fiap.aquamind.service.HistoricoAcaoUsuarioService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Endpoints REST para CRUD de HistoricoAcaoUsuario, usando DTO.
+ * Endpoints REST para CRUD de HistoricoAcaoUsuario, agora usando HistoricoAcaoUsuarioService.
  */
 @RestController
 @RequestMapping("/api/historico-acoes")
 public class HistoricoAcaoUsuarioController {
 
     @Autowired
-    private HistoricoAcaoUsuarioRepository historicoRepository;
+    private HistoricoAcaoUsuarioService historicoService;
 
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
+    /**
+     * GET /api/historico-acoes
+     * Retorna todos os registros de histórico como DTO.
+     */
     @GetMapping
     public List<HistoricoAcaoUsuarioDTO> listarTodos() {
-        List<HistoricoAcaoUsuario> lista = historicoRepository.findAll();
-        return lista.stream()
-                .map(HistoricoAcaoUsuarioDTO::fromEntity)
-                .collect(Collectors.toList());
+        return historicoService.listarTodas();
     }
 
+    /**
+     * GET /api/historico-acoes/{id}
+     * Busca um registro de histórico por ID. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @GetMapping("/{id}")
     public HistoricoAcaoUsuarioDTO buscarPorId(@PathVariable Long id) {
-        HistoricoAcaoUsuario h = historicoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Histórico não encontrado com id = " + id));
-        return HistoricoAcaoUsuarioDTO.fromEntity(h);
+        return historicoService.buscarPorId(id);
     }
 
+    /**
+     * POST /api/historico-acoes
+     * Cria um novo histórico de ação de usuário a partir de um DTO válido.
+     */
     @PostMapping
-    public ResponseEntity<HistoricoAcaoUsuarioDTO> criar(@Valid @RequestBody HistoricoAcaoUsuarioDTO novoDTO) {
-        Usuario usuario = usuarioRepository.findById(novoDTO.getIdUsuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id = " + novoDTO.getIdUsuario()));
-
-        HistoricoAcaoUsuario h = novoDTO.toEntity();
-        h.setUsuario(usuario);
-
-        HistoricoAcaoUsuario salvo = historicoRepository.save(h);
-        HistoricoAcaoUsuarioDTO respostaDTO = HistoricoAcaoUsuarioDTO.fromEntity(salvo);
-        return ResponseEntity.status(201).body(respostaDTO);
+    public ResponseEntity<HistoricoAcaoUsuarioDTO> criar(
+            @Valid @RequestBody HistoricoAcaoUsuarioDTO novoDTO
+    ) {
+        HistoricoAcaoUsuarioDTO criado = historicoService.criar(novoDTO);
+        return ResponseEntity.status(201).body(criado);
     }
 
+    /**
+     * PUT /api/historico-acoes/{id}
+     * Atualiza um histórico de ação de usuário existente.
+     * Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<HistoricoAcaoUsuarioDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody HistoricoAcaoUsuarioDTO dtoAtualizado
     ) {
-        HistoricoAcaoUsuario existente = historicoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Histórico não encontrado com id = " + id));
-
-        Usuario usuario = usuarioRepository.findById(dtoAtualizado.getIdUsuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id = " + dtoAtualizado.getIdUsuario()));
-
-        existente = dtoAtualizado.updateEntity(existente);
-        existente.setUsuario(usuario);
-
-        HistoricoAcaoUsuario atualizado = historicoRepository.save(existente);
-        HistoricoAcaoUsuarioDTO respostaDTO = HistoricoAcaoUsuarioDTO.fromEntity(atualizado);
-        return ResponseEntity.ok(respostaDTO);
+        HistoricoAcaoUsuarioDTO atualizado = historicoService.atualizar(id, dtoAtualizado);
+        return ResponseEntity.ok(atualizado);
     }
 
+    /**
+     * DELETE /api/historico-acoes/{id}
+     * Deleta um registro de histórico. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        HistoricoAcaoUsuario existente = historicoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Histórico não encontrado com id = " + id));
-
-        historicoRepository.delete(existente);
+        historicoService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

@@ -1,99 +1,74 @@
-// src/main/java/br/com/fiap/aquamind/controller/LogAcaoBombaController.java
 package br.com.fiap.aquamind.controller;
 
 import br.com.fiap.aquamind.dto.LogAcaoBombaDTO;
-import br.com.fiap.aquamind.exception.ResourceNotFoundException;
-import br.com.fiap.aquamind.model.LogAcaoBomba;
-import br.com.fiap.aquamind.model.Bomba;
-import br.com.fiap.aquamind.model.Usuario;
-import br.com.fiap.aquamind.repository.LogAcaoBombaRepository;
-import br.com.fiap.aquamind.repository.BombaRepository;
-import br.com.fiap.aquamind.repository.UsuarioRepository;
+import br.com.fiap.aquamind.service.LogAcaoBombaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Endpoints REST para CRUD de LogAcaoBomba, usando DTO.
+ * Endpoints REST para CRUD de LogAcaoBomba, agora usando LogAcaoBombaService.
  */
 @RestController
 @RequestMapping("/api/logs-bomba")
 public class LogAcaoBombaController {
 
     @Autowired
-    private LogAcaoBombaRepository logAcaoBombaRepository;
+    private LogAcaoBombaService logAcaoBombaService;
 
-    @Autowired
-    private BombaRepository bombaRepository;
-
-    @Autowired
-    private UsuarioRepository usuarioRepository;
-
+    /**
+     * GET /api/logs-bomba
+     * Lista todos os logs de ação de bomba como DTO.
+     */
     @GetMapping
     public List<LogAcaoBombaDTO> listarTodos() {
-        List<LogAcaoBomba> lista = logAcaoBombaRepository.findAll();
-        return lista.stream()
-                .map(LogAcaoBombaDTO::fromEntity)
-                .collect(Collectors.toList());
+        return logAcaoBombaService.listarTodos();
     }
 
+    /**
+     * GET /api/logs-bomba/{id}
+     * Busca um log por ID. Se não existir, o service lança ResourceNotFoundException.
+     */
     @GetMapping("/{id}")
     public LogAcaoBombaDTO buscarPorId(@PathVariable Long id) {
-        LogAcaoBomba log = logAcaoBombaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Log não encontrado com id = " + id));
-        return LogAcaoBombaDTO.fromEntity(log);
+        return logAcaoBombaService.buscarPorId(id);
     }
 
+    /**
+     * POST /api/logs-bomba
+     * Cria um novo log de ação de bomba a partir de DTO válido.
+     */
     @PostMapping
-    public ResponseEntity<LogAcaoBombaDTO> criar(@Valid @RequestBody LogAcaoBombaDTO novoDTO) {
-        Bomba bomba = bombaRepository.findById(novoDTO.getIdBomba())
-                .orElseThrow(() -> new ResourceNotFoundException("Bomba não encontrada com id = " + novoDTO.getIdBomba()));
-
-        Usuario usuario = usuarioRepository.findById(novoDTO.getIdUsuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id = " + novoDTO.getIdUsuario()));
-
-        LogAcaoBomba log = novoDTO.toEntity();
-        log.setBomba(bomba);
-        log.setUsuario(usuario);
-
-        LogAcaoBomba salvo = logAcaoBombaRepository.save(log);
-        LogAcaoBombaDTO respostaDTO = LogAcaoBombaDTO.fromEntity(salvo);
-        return ResponseEntity.status(201).body(respostaDTO);
+    public ResponseEntity<LogAcaoBombaDTO> criar(
+            @Valid @RequestBody LogAcaoBombaDTO novoDTO
+    ) {
+        LogAcaoBombaDTO criado = logAcaoBombaService.criar(novoDTO);
+        return ResponseEntity.status(201).body(criado);
     }
 
+    /**
+     * PUT /api/logs-bomba/{id}
+     * Atualiza um log existente. Se não existir, o service lança ResourceNotFoundException.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<LogAcaoBombaDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody LogAcaoBombaDTO dtoAtualizado
     ) {
-        LogAcaoBomba existente = logAcaoBombaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Log não encontrado com id = " + id));
-
-        Bomba bomba = bombaRepository.findById(dtoAtualizado.getIdBomba())
-                .orElseThrow(() -> new ResourceNotFoundException("Bomba não encontrada com id = " + dtoAtualizado.getIdBomba()));
-
-        Usuario usuario = usuarioRepository.findById(dtoAtualizado.getIdUsuario())
-                .orElseThrow(() -> new ResourceNotFoundException("Usuário não encontrado com id = " + dtoAtualizado.getIdUsuario()));
-
-        existente = dtoAtualizado.updateEntity(existente);
-        existente.setBomba(bomba);
-        existente.setUsuario(usuario);
-
-        LogAcaoBomba atualizado = logAcaoBombaRepository.save(existente);
-        LogAcaoBombaDTO respostaDTO = LogAcaoBombaDTO.fromEntity(atualizado);
-        return ResponseEntity.ok(respostaDTO);
+        LogAcaoBombaDTO atualizado = logAcaoBombaService.atualizar(id, dtoAtualizado);
+        return ResponseEntity.ok(atualizado);
     }
 
+    /**
+     * DELETE /api/logs-bomba/{id}
+     * Deleta um log existente. Se não existir, o service lança ResourceNotFoundException.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        LogAcaoBomba existente = logAcaoBombaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Log não encontrado com id = " + id));
-
-        logAcaoBombaRepository.delete(existente);
+        logAcaoBombaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

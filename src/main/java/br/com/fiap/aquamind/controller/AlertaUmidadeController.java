@@ -1,86 +1,74 @@
-// src/main/java/br/com/fiap/aquamind/controller/AlertaUmidadeController.java
 package br.com.fiap.aquamind.controller;
 
 import br.com.fiap.aquamind.dto.AlertaUmidadeDTO;
-import br.com.fiap.aquamind.exception.ResourceNotFoundException;
-import br.com.fiap.aquamind.model.AlertaUmidade;
-import br.com.fiap.aquamind.model.Zona;
-import br.com.fiap.aquamind.repository.AlertaUmidadeRepository;
-import br.com.fiap.aquamind.repository.ZonaRepository;
+import br.com.fiap.aquamind.service.AlertaUmidadeService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
- * Endpoints REST para CRUD de AlertaUmidade, usando DTO.
+ * Endpoints REST para CRUD de AlertaUmidade, agora usando AlertaUmidadeService.
  */
 @RestController
 @RequestMapping("/api/alertas-umidade")
 public class AlertaUmidadeController {
 
     @Autowired
-    private AlertaUmidadeRepository alertaRepository;
+    private AlertaUmidadeService alertaUmidadeService;
 
-    @Autowired
-    private ZonaRepository zonaRepository;
-
+    /**
+     * GET /api/alertas-umidade
+     * Retorna todos os alertas de umidade em formato DTO.
+     */
     @GetMapping
     public List<AlertaUmidadeDTO> listarTodos() {
-        List<AlertaUmidade> lista = alertaRepository.findAll();
-        return lista.stream()
-                .map(AlertaUmidadeDTO::fromEntity)
-                .collect(Collectors.toList());
+        return alertaUmidadeService.listarTodas();
     }
 
+    /**
+     * GET /api/alertas-umidade/{id}
+     * Busca um alerta por ID; se não encontrar, o service lança ResourceNotFoundException.
+     */
     @GetMapping("/{id}")
     public AlertaUmidadeDTO buscarPorId(@PathVariable Long id) {
-        AlertaUmidade a = alertaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado com id = " + id));
-        return AlertaUmidadeDTO.fromEntity(a);
+        return alertaUmidadeService.buscarPorId(id);
     }
 
+    /**
+     * POST /api/alertas-umidade
+     * Cria um novo alerta de umidade. Recebe AlertaUmidadeDTO no corpo.
+     */
     @PostMapping
-    public ResponseEntity<AlertaUmidadeDTO> criar(@Valid @RequestBody AlertaUmidadeDTO novoDTO) {
-        Zona zona = zonaRepository.findById(novoDTO.getIdZona())
-                .orElseThrow(() -> new ResourceNotFoundException("Zona não encontrada com id = " + novoDTO.getIdZona()));
-
-        AlertaUmidade a = novoDTO.toEntity();
-        a.setZona(zona);
-
-        AlertaUmidade salvo = alertaRepository.save(a);
-        AlertaUmidadeDTO respostaDTO = AlertaUmidadeDTO.fromEntity(salvo);
-        return ResponseEntity.status(201).body(respostaDTO);
+    public ResponseEntity<AlertaUmidadeDTO> criar(
+            @Valid @RequestBody AlertaUmidadeDTO novoDTO
+    ) {
+        AlertaUmidadeDTO criado = alertaUmidadeService.criar(novoDTO);
+        return ResponseEntity.status(201).body(criado);
     }
 
+    /**
+     * PUT /api/alertas-umidade/{id}
+     * Atualiza um alerta de umidade existente. Recebe DTO com os novos valores.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<AlertaUmidadeDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody AlertaUmidadeDTO dtoAtualizado
     ) {
-        AlertaUmidade existente = alertaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado com id = " + id));
-
-        Zona zona = zonaRepository.findById(dtoAtualizado.getIdZona())
-                .orElseThrow(() -> new ResourceNotFoundException("Zona não encontrada com id = " + dtoAtualizado.getIdZona()));
-
-        existente = dtoAtualizado.updateEntity(existente);
-        existente.setZona(zona);
-
-        AlertaUmidade atualizado = alertaRepository.save(existente);
-        AlertaUmidadeDTO respostaDTO = AlertaUmidadeDTO.fromEntity(atualizado);
-        return ResponseEntity.ok(respostaDTO);
+        AlertaUmidadeDTO atualizado = alertaUmidadeService.atualizar(id, dtoAtualizado);
+        return ResponseEntity.ok(atualizado);
     }
 
+    /**
+     * DELETE /api/alertas-umidade/{id}
+     * Deleta um alerta de umidade. Se não existir, o service lança ResourceNotFoundException.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        AlertaUmidade existente = alertaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Alerta não encontrado com id = " + id));
-
-        alertaRepository.delete(existente);
+        alertaUmidadeService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

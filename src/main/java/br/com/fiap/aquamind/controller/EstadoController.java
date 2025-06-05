@@ -1,73 +1,72 @@
 package br.com.fiap.aquamind.controller;
 
 import br.com.fiap.aquamind.dto.EstadoDTO;
-import br.com.fiap.aquamind.exception.ResourceNotFoundException;
-import br.com.fiap.aquamind.model.Estado;
-import br.com.fiap.aquamind.repository.EstadoRepository;
+import br.com.fiap.aquamind.service.EstadoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Endpoints REST para CRUD de Estado, agora usando EstadoService.
+ */
 @RestController
 @RequestMapping("/api/estados")
 public class EstadoController {
 
     @Autowired
-    private EstadoRepository estadoRepository;
+    private EstadoService estadoService;
 
-    // GET /api/estados
+    /**
+     * GET /api/estados
+     * Retorna todos os estados em formato DTO.
+     */
     @GetMapping
     public List<EstadoDTO> listarTodos() {
-        List<Estado> listaEntidades = estadoRepository.findAll();
-        return listaEntidades.stream()
-                .map(EstadoDTO::fromEntity)
-                .collect(Collectors.toList());
+        return estadoService.listarTodos();
     }
 
-    // GET /api/estados/{id}
+    /**
+     * GET /api/estados/{id}
+     * Busca um estado por ID. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @GetMapping("/{id}")
     public EstadoDTO buscarPorId(@PathVariable Long id) {
-        Estado e = estadoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Estado não encontrado com id = " + id));
-        return EstadoDTO.fromEntity(e);
+        return estadoService.buscarPorId(id);
     }
 
-    // POST /api/estados
+    /**
+     * POST /api/estados
+     * Cria um novo estado a partir de um DTO válido.
+     */
     @PostMapping
     public ResponseEntity<EstadoDTO> criar(@Valid @RequestBody EstadoDTO novoEstadoDTO) {
-        Estado estadoParaSalvar = novoEstadoDTO.toEntity();
-        Estado salvo = estadoRepository.save(estadoParaSalvar);
-        EstadoDTO respostaDTO = EstadoDTO.fromEntity(salvo);
-        return ResponseEntity.status(201).body(respostaDTO);
+        EstadoDTO criado = estadoService.criar(novoEstadoDTO);
+        return ResponseEntity.status(201).body(criado);
     }
 
-    // PUT /api/estados/{id}
+    /**
+     * PUT /api/estados/{id}
+     * Atualiza um estado existente. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @PutMapping("/{id}")
     public ResponseEntity<EstadoDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody EstadoDTO estadoAtualizadoDTO
     ) {
-        Estado existente = estadoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Estado não encontrado com id = " + id));
-
-        existente.setNome(estadoAtualizadoDTO.getNome());
-        existente.setSigla(estadoAtualizadoDTO.getSigla());
-        Estado atualizado = estadoRepository.save(existente);
-        EstadoDTO respostaDTO = EstadoDTO.fromEntity(atualizado);
-        return ResponseEntity.ok(respostaDTO);
+        EstadoDTO atualizado = estadoService.atualizar(id, estadoAtualizadoDTO);
+        return ResponseEntity.ok(atualizado);
     }
 
-    // DELETE /api/estados/{id}
+    /**
+     * DELETE /api/estados/{id}
+     * Deleta um estado. Se não existir, ResourceNotFoundException é lançada pelo service.
+     */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        Estado existente = estadoRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Estado não encontrado com id = " + id));
-
-        estadoRepository.delete(existente);
+        estadoService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

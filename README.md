@@ -17,7 +17,7 @@ O AquaMind foi concebido para enfrentar os desafios da seca e escassez hídrica 
 - API RESTful com documentação interativa via Swagger.
 - Estrutura modular (Propriedade → Zona → Sensor → Leitura → Irrigação), permitindo futuras expansões (integração com previsão climática, novos sensores, relatórios avançados).
 
-Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025-1 e visa demonstrar boas práticas de arquitetura, design de API, containerização e DevOps em apenas duas semanas de desenvolvimento.
+Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025 e visa demonstrar boas práticas de arquitetura, design de API e containerização.
 
 ---
 

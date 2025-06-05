@@ -338,9 +338,9 @@ src/
 - **"O header Authorization: Bearer {token} deve ser enviado em todas as chamadas após o login."**
 - **"Cada rota de CRUD segue as boas práticas REST (status codes 200/201/204/400/401/403/404)."**
 
-# Alguns Testes Manuais via Swagger UI
+# Alguns Testes Manuais via Swagger UI e Obter Token
 
-## Registrar Usuário e Obter Token
+## Registrar Usuário
 
 No Auth Controller → `POST /api/auth/register`, envie um JSON como:
 

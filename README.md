@@ -338,7 +338,7 @@ src/
 - **"O header Authorization: Bearer {token} deve ser enviado em todas as chamadas após o login."**
 - **"Cada rota de CRUD segue as boas práticas REST (status codes 200/201/204/400/401/403/404)."**
 
-# Testes Manuais via Swagger UI
+# Alguns Testes Manuais via Swagger UI
 
 ## Registrar Usuário e Obter Token
 
@@ -376,7 +376,7 @@ Clique em Authorize e depois em Close.
 
 Agora todos os endpoints marcados com ícone de cadeado aceitarão esse token no header Authorization.
 
-## Exemplos de Chamadas CRUD
+## Exemplos de algumas Chamadas CRUD
 
 ### Criar Propriedade
 

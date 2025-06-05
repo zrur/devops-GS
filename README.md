@@ -204,10 +204,10 @@ src/
 │   │                           └── • Cada serviço implementa a lógica de negócio (CRUD, validações, etc.)
 │   │
 │   └── resources/
-│       ├── static/                    ── • (vazio ou arquivos estáticos, se houver)
-│       ├── templates/                 ── • (vazio ou templates Thymeleaf, se houver)
-│       ├── application.properties     ── • Configurações de conexão, JPA, H2, JWT, etc.
-│       └── data.sql                   ── • (Opcional) scripts de inicialização do banco
+│       ├── static/                    
+│       ├── templates/                 
+│       ├── application.properties     
+│      
 └── test/
 └── java/
 └── br/

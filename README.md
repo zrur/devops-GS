@@ -283,7 +283,7 @@ src/
    cd AquaMind-Java
 
 
-🔗 Rotas Principais da API
+## 🔗 Rotas Principais da API
 
 | Método | Caminho                    | Descrição                                |
 | ------ |----------------------------| ---------------------------------------- |

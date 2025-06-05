@@ -7,5 +7,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AlertaUmidadeRepository extends JpaRepository<AlertaUmidade, Long> {
-    // Métodos básicos providos pelo JpaRepository
 }

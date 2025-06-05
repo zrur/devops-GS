@@ -1,123 +1,74 @@
 package br.com.fiap.aquamind.controller;
 
 import br.com.fiap.aquamind.dto.BombaDTO;
-import br.com.fiap.aquamind.exception.ResourceNotFoundException;
-import br.com.fiap.aquamind.model.Bomba;
-import br.com.fiap.aquamind.model.Zona;
-import br.com.fiap.aquamind.repository.BombaRepository;
-import br.com.fiap.aquamind.repository.ZonaRepository;
+import br.com.fiap.aquamind.service.BombaService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Endpoints REST para CRUD de Bomba, agora usando a camada de serviço.
+ */
 @RestController
 @RequestMapping("/api/bombas")
 public class BombaController {
 
     @Autowired
-    private BombaRepository bombaRepository;
-
-    @Autowired
-    private ZonaRepository zonaRepository;
+    private BombaService bombaService;
 
     /**
      * GET /api/bombas
-     * Retorna todas as bombas em formato de DTO.
+     * Retorna todas as bombas (DTO).
      */
     @GetMapping
     public List<BombaDTO> listarTodas() {
-        List<Bomba> listaEntidades = bombaRepository.findAll();
-        return listaEntidades
-                .stream()
-                .map(BombaDTO::fromEntity)
-                .collect(Collectors.toList());
+        return bombaService.listarTodas();
     }
 
     /**
      * GET /api/bombas/{id}
-     * Busca uma bomba por ID. Se não encontrar, lança ResourceNotFoundException.
+     * Busca uma única bomba por ID.
      */
     @GetMapping("/{id}")
     public BombaDTO buscarPorId(@PathVariable Long id) {
-        Bomba bomba = bombaRepository.findById(id)
-                .orElseThrow(() ->  new ResourceNotFoundException("Bomba não encontrada com id = " + id));
-        return BombaDTO.fromEntity(bomba);
+        return bombaService.buscarPorId(id);
     }
 
     /**
      * POST /api/bombas
-     * Cria uma nova bomba a partir de dados recebidos em JSON (BombaDTO).
+     * Cria uma bomba a partir de um DTO válido.
      */
     @PostMapping
-    public ResponseEntity<BombaDTO> criar(@Valid @RequestBody BombaDTO novaBombaDTO) {
-        // 1) Valida se a Zona existe
-        Zona zona = zonaRepository.findById(novaBombaDTO.getIdZona())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Zona não encontrada com id = " + novaBombaDTO.getIdZona()
-                ));
-
-        // 2) Monta a entidade Bomba
-        Bomba bomba = new Bomba();
-        bomba.setZona(zona);
-        bomba.setModelo(novaBombaDTO.getModelo());
-        bomba.setStatus(novaBombaDTO.getStatus());
-        bomba.setAtivo(novaBombaDTO.getAtivo());
-        bomba.setDataInstalacao(novaBombaDTO.getDataInstalacao());
-
-        // 3) Salva no repositório
-        Bomba salva = bombaRepository.save(bomba);
-
-        // 4) Converte para DTO e retorna 201 Created
-        BombaDTO respostaDTO = BombaDTO.fromEntity(salva);
-        return ResponseEntity.status(201).body(respostaDTO);
+    public ResponseEntity<BombaDTO> criar(
+            @Valid @RequestBody BombaDTO novaBombaDTO
+    ) {
+        BombaDTO criada = bombaService.criar(novaBombaDTO);
+        return ResponseEntity.status(201).body(criada);
     }
 
     /**
      * PUT /api/bombas/{id}
-     * Atualiza uma bomba existente (buscando pelo id). Se não encontrar, lança ResourceNotFoundException.
+     * Atualiza uma bomba existente.
      */
     @PutMapping("/{id}")
     public ResponseEntity<BombaDTO> atualizar(
             @PathVariable Long id,
             @Valid @RequestBody BombaDTO dadosAtualizadosDTO
     ) {
-        // 1) Verifica se a bomba existe
-        Bomba existente = bombaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Bomba não encontrada com id = " + id));
-
-        // 2) Verifica se a zona informada no DTO existe
-        Zona zona = zonaRepository.findById(dadosAtualizadosDTO.getIdZona())
-                .orElseThrow(() -> new ResourceNotFoundException(
-                        "Zona não encontrada com id = " + dadosAtualizadosDTO.getIdZona()
-                ));
-
-        // 3) Atualiza os campos da entidade
-        existente.setZona(zona);
-        existente.setModelo(dadosAtualizadosDTO.getModelo());
-        existente.setStatus(dadosAtualizadosDTO.getStatus());
-        existente.setAtivo(dadosAtualizadosDTO.getAtivo());
-        existente.setDataInstalacao(dadosAtualizadosDTO.getDataInstalacao());
-
-        // 4) Salva e converte para DTO
-        Bomba atualizada = bombaRepository.save(existente);
-        BombaDTO respostaDTO = BombaDTO.fromEntity(atualizada);
-        return ResponseEntity.ok(respostaDTO);
+        BombaDTO atualizada = bombaService.atualizar(id, dadosAtualizadosDTO);
+        return ResponseEntity.ok(atualizada);
     }
 
     /**
      * DELETE /api/bombas/{id}
-     * Deleta a bomba especificada por id. Se não encontrar, lança ResourceNotFoundException.
+     * Deleta uma bomba. Se não existir, o service lança ResourceNotFoundException.
      */
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletar(@PathVariable Long id) {
-        Bomba existente = bombaRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("Bomba não encontrada com id = " + id));
-
-        bombaRepository.delete(existente);
+        bombaService.deletar(id);
         return ResponseEntity.noContent().build();
     }
 }

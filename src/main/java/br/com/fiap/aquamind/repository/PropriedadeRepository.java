@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface PropriedadeRepository extends JpaRepository<Propriedade, Long> {
-    // JpaRepository já fornece todos os métodos CRUD necessários.
 }

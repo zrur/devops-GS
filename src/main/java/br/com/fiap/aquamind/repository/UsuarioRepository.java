@@ -9,12 +9,12 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository<Usuario, Long> {
     /**
-     * Método usado no AuthController para verificar existência de e-mail
+     * Usado em AuthController para verificar se já existe um usuário com aquele e-mail.
      */
     boolean existsByEmail(String email);
 
     /**
-     * Método usado internamente pelo Spring Security (CustomUserDetailsService) para carregar o usuário por e-mail
+     * Usado pelo CustomUserDetailsService para carregar o usuário pelo e-mail.
      */
     Optional<Usuario> findByEmail(String email);
 }

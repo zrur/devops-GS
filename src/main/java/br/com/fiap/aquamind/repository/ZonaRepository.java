@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ZonaRepository extends JpaRepository<Zona, Long> {
-    // JpaRepository já contém findAll(), findById(), save(), delete() etc.
+
 }

@@ -6,6 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface EstadoRepository extends JpaRepository<Estado, Long> {
-    // Neste momento não precisamos de métodos adicionais,
-    // o JpaRepository já fornece findAll(), findById(), save(), delete() etc.
 }

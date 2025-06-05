@@ -6,5 +6,4 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface BombaRepository extends JpaRepository<Bomba, Long> {
-    // CRUD completo e métodos de consulta básicos já vêm com JpaRepository.
 }

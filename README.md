@@ -1,552 +1,722 @@
-# AquaMind – Sistema Inteligente de Irrigação
+# 🌊 AquaMind - Sistema Inteligente de Irrigação
 
-AquaMind é um sistema inteligente de irrigação voltado para pequenos e médios produtores rurais que desejam otimizar o uso de água em suas plantações. Ele combina sensores de umidade conectados via IoT, uma API backend em Java Spring Boot e um dashboard web para fornecer monitoramento em tempo real das condições do solo, alertas automáticos e controle remoto de bombas de irrigação. O objetivo é reduzir o desperdício de água, melhorar a eficiência na irrigação e permitir que o produtor tome decisões informadas com base em dados históricos e em tempo real.
+![Java](https://img.shields.io/badge/Java-21-orange?style=flat-square&logo=java)
+![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.5.0-brightgreen?style=flat-square&logo=springboot)
+![Docker](https://img.shields.io/badge/Docker-Containerized-blue?style=flat-square&logo=docker)
+![MySQL](https://img.shields.io/badge/MySQL-8.4.5-blue?style=flat-square&logo=mysql)
+![License](https://img.shields.io/badge/License-MIT-green?style=flat-square)
 
-AquaMind é uma solução completa para pequenos e médios produtores rurais que desejam monitorar e automatizar a irrigação de suas propriedades,  
-especialmente em regiões com escassez hídrica. Com integração IoT, backend Java Spring Boot, dashboard web, API REST, segurança JWT e containerização,  
-o AquaMind oferece eficiência no uso da água, histórico de dados e controle remoto das bombas.
+> Sistema de monitoramento e controle inteligente de irrigação para otimização do uso da água na agricultura.
 
----
+## 📋 Índice
 
-## 🌎 Visão Geral
+- [📖 Sobre o Projeto](#-sobre-o-projeto)
+- [✨ Funcionalidades](#-funcionalidades)
+- [🏗️ Arquitetura](#️-arquitetura)
+- [🚀 Tecnologias](#-tecnologias)
+- [⚙️ Pré-requisitos](#️-pré-requisitos)
+- [🐳 Instalação e Execução](#-instalação-e-execução)
+- [📚 Documentação da API](#-documentação-da-api)
+- [🧪 Testes](#-testes)
+- [👥 Integrantes](#-integrantes)
+- [🎥 Demonstração](#-demonstração)
+- [📄 Licença](#-licença)
 
-O AquaMind foi concebido para enfrentar os desafios da seca e escassez hídrica em áreas agrícolas, oferecendo:
+## 📖 Sobre o Projeto
 
-- Monitoramento em tempo real da umidade do solo por meio de sensores IoT (ESP32 + sensores capacitivos).
-- Dashboard Web para visualizar gráficos históricos de umidade, alertas e status das zonas de plantio.
-- Controle remoto de irrigação: acione bombas manualmente ou de forma automática quando a umidade estiver abaixo de um limiar configurado.
-- Segurança JWT: autenticação de usuários e proteção de endpoints.
-- API RESTful com documentação interativa via Swagger.
-- Estrutura modular (Propriedade → Zona → Sensor → Leitura → Irrigação), permitindo futuras expansões (integração com previsão climática, novos sensores, relatórios avançados).
+O **AquaMind** é uma solução tecnológica desenvolvida para resolver um dos principais desafios do agronegócio moderno: **o uso eficiente da água na irrigação**. O sistema utiliza sensores IoT para monitorar a umidade do solo em tempo real e automatiza o processo de irrigação, garantindo que as plantas recebam a quantidade ideal de água.
 
-Este projeto faz parte do desafio Java Advanced da FIAP Global Solution 2025 e visa demonstrar boas práticas de arquitetura, design de API e containerização.
+### 🎯 Problema Resolvido
 
----
+- **Desperdício de água** por irrigação desnecessária
+- **Falta de dados precisos** sobre umidade do solo
+- **Custos elevados** com água e energia
+- **Baixa produtividade** por irrigação inadequada
+- **Impacto ambiental** do uso excessivo de recursos hídricos
 
-## 🚀 Principais Funcionalidades
+### 💡 Solução Proposta
 
-1. **Autenticação e Autorização**
-   - Cadastro e login de usuários (Produtores) via JWT.
-   - Papéis (“ROLE_USER” e “ROLE_ADMIN”) para controlar acessos.
+Sistema inteligente que combina **IoT**, **análise de dados** e **automação** para:
+- Monitorar umidade do solo 24/7
+- Automatizar irrigação baseada em dados reais
+- Gerar alertas para tomada de decisão
+- Otimizar uso de água e energia
+- Aumentar produtividade agrícola
 
-2. **CRUD de Propriedades Agrícolas**
-   - Cada usuário pode cadastrar múltiplas propriedades (fazendas).
-   - Informações básicas: nome, endereço, coordenadas.
+## ✨ Funcionalidades
 
-3. **Gerenciamento de Zonas de Plantio**
-   - Cada propriedade possui várias zonas (áreas) de cultivo.
-   - Definição de “umidade alvo” para automação.
+### 🔐 **Autenticação & Autorização**
+- [x] Sistema de login/registro com JWT
+- [x] Controle de acesso por tipo de usuário
+- [x] Sessões seguras com tokens
 
-4. **Cadastro de Sensores**
-   - Associe sensores (ESP32) a uma zona específica.
-   - Cada sensor publica leituras de umidade via MQTT/HTTP → Node-RED → API.
+### 🏡 **Gestão de Propriedades**
+- [x] Cadastro e gerenciamento de propriedades rurais
+- [x] Associação com estados e regiões
+- [x] Controle de área em hectares
+- [x] Status ativo/inativo
 
-5. **Registro de Leituras de Umidade**
-   - Persistência das leituras no banco relacional (H2/PostgreSQL/Oracle).
-   - Marcação de alertas quando o valor de umidade < umidade alvo da zona.
+### 🗺️ **Zonas de Irrigação**
+- [x] Divisão de propriedades em zonas
+- [x] Configuração específica por zona
+- [x] Monitoramento independente
+- [x] Controle de área por zona
 
-6. **Histórico de Irrigação**
-   - Registrar cada acionamento de irrigação (manualmente ou automático).
-   - Informar data/hora de início, fim e volume de água bombeado (litros).
+### 📊 **Sensores IoT**
+- [x] Cadastro de sensores de umidade
+- [x] Registro de leituras em tempo real
+- [x] Histórico de medições
+- [x] Status e calibração de sensores
 
-7. **Dashboard Web (Swagger / futuros Web UI)**
-   - Documentação interativa (Swagger UI) para testar e visualizar todos os endpoints.
-   - Em versões futuras, um front-end em React ou Next.js pode consumir esta API para exibir gráficos dinâmicos.
+### 💧 **Sistema de Irrigação**
+- [x] Controle automático de bombas
+- [x] Agendamento de irrigação
+- [x] Logs de ações realizadas
+- [x] Monitoramento de volume de água
 
-8. **Tratamento Global de Exceções**
-   - Erros padronizados (404 Not Found, 400 Bad Request, 401 Unauthorized) via GlobalExceptionHandler.
+### 🚨 **Alertas Inteligentes**
+- [x] Alertas automáticos de baixa umidade
+- [x] Notificações de falhas em sensores
+- [x] Sistema de resolução de alertas
+- [x] Histórico de ocorrências
 
----
+### ⚙️ **Configurações Avançadas**
+- [x] Limites personalizados de umidade
+- [x] Horários de irrigação programáveis
+- [x] Configurações por zona
+- [x] Perfis de irrigação
 
-## 🔗 Link para Documentação Interativa (Swagger UI)
+### 📈 **Relatórios e Analytics**
+- [x] Histórico de irrigações
+- [x] Consumo de água por período
+- [x] Relatórios de eficiência
+- [x] Dados para tomada de decisão
 
-Assim que a aplicação estiver rodando (porta 8080 por padrão), abra no navegador:
+## 🏗️ Arquitetura
 
-> **[http://localhost:8080/swagger-ui/index.html](http://localhost:8080/swagger-ui/index.html)**
-
-Lá você encontrará todos os endpoints agrupados por controller, poderá preencher parâmetros, clicar em **Try it out** e ver as respostas (com exemplo de cURL, payloads, headers etc.).  
-
-
-Para endpoints protegidos, clique em **Authorize** (ícone de cadeado no canto superior direito) e insira:
-
-#### **Bearer <seu_token_JWT_obtido_no_login>**
-
----
-
-## 🏗️ Arquitetura e Estrutura de Pastas
-
+### 🌐 **Visão Geral da Solução**
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              AQUAMIND ECOSYSTEM                             │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐   │
+│  │ 📱 Mobile    │  │ 💻 Web App   │  │ 🌡️ IoT       │  │ 📊 Analytics │   │
+│  │ React Native │  │ React.js     │  │ Sensors      │  │ Dashboard    │   │
+│  │              │  │              │  │              │  │              │   │
+│  │ • Alerts     │  │ • Management │  │ • Humidity   │  │ • Reports    │   │
+│  │ • Control    │  │ • Reports    │  │ • Temperature│  │ • Insights   │   │
+│  │ • Monitor    │  │ • Config     │  │ • pH Level   │  │ • Predictions│   │
+│  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘  └──────┬───────┘   │
+│         │                 │                 │                 │           │
+│         └─────────────────┼─────────────────┼─────────────────┘           │
+│                           │                 │                             │
+└───────────────────────────┼─────────────────┼─────────────────────────────┘
+                            │                 │
+                ┌───────────┴─────────────────┴───────────┐
+                │             API GATEWAY                 │
+                │                                         │
+                │  • HTTPS/SSL Termination               │
+                │  • Rate Limiting & Throttling          │
+                │  • Authentication & Authorization      │
+                │  • Request/Response Logging            │
+                │  • Load Balancing                      │
+                └───────────────┬─────────────────────────┘
+                                │
+                ┌───────────────┴─────────────────────────┐
+                │          MICROSERVICES LAYER           │
+                │                                         │
+                │  ┌─────────────┐    ┌─────────────┐     │
+                │  │🔐 Auth      │    │🏡 Property  │     │
+                │  │Service      │    │Service      │     │
+                │  │             │    │             │     │
+                │  │• JWT        │    │• CRUD       │     │
+                │  │• Users      │    │• Validation │     │
+                │  │• Roles      │    │• Business   │     │
+                │  └─────────────┘    └─────────────┘     │
+                │                                         │
+                │  ┌─────────────┐    ┌─────────────┐     │
+                │  │📊 Sensor    │    │💧 Irrigation│     │
+                │  │Service      │    │Service      │     │
+                │  │             │    │             │     │
+                │  │• Monitoring │    │• Automation │     │
+                │  │• Analytics  │    │• Scheduling │     │
+                │  │• Alerts     │    │• Control    │     │
+                │  └─────────────┘    └─────────────┘     │
+                └───────────────┬─────────────────────────┘
+                                │
+                ┌───────────────┴─────────────────────────┐
+                │           DATA & PERSISTENCE            │
+                │                                         │
+                │  ┌─────────────┐    ┌─────────────┐     │
+                │  │🗄️ MySQL     │    │📈 Time      │     │
+                │  │Primary DB   │    │Series DB    │     │
+                │  │             │    │             │     │
+                │  │• Users      │    │• Sensor     │     │
+                │  │• Properties │    │  Data       │     │
+                │  │• Config     │    │• Metrics    │     │
+                │  └─────────────┘    └─────────────┘     │
+                │                                         │
+                │  ┌─────────────┐    ┌─────────────┐     │
+                │  │💾 Redis     │    │📁 File      │     │
+                │  │Cache        │    │Storage      │     │
+                │  │             │    │             │     │
+                │  │• Sessions   │    │• Images     │     │
+                │  │• Cache      │    │• Documents  │     │
+                │  │• Temp Data  │    │• Exports    │     │
+                │  └─────────────┘    └─────────────┘     │
+                └─────────────────────────────────────────┘
 ```
 
-src/
-├── main/
-│   ├── java/
-│   │   └── br/
-│   │       └── com/
-│   │           └── fiap/
-│   │               └── aquamind/
-│   │                   ├── AquaMindApplication.java
-│   │                   │   └── • Classe principal do Spring Boot
-│   │                   │
-│   │                   ├── config/
-│   │                   │   ├── CorsConfig.java
-│   │                   │   │   └── • Configuração global de CORS
-│   │                   │   │
-│   │                   │   ├── SecurityConfig.java
-│   │                   │   │   └── • Configurações de Spring Security (JWT, roles, etc.)
-│   │                   │   │
-│   │                   │   └── SwaggerConfig.java
-│   │                   │       └── • Customização da documentação OpenAPI (Swagger)
-│   │                   │
-│   │                   ├── controller/
-│   │                   │   ├── AlertaUmidadeController.java
-│   │                   │   │   └── • CRUD de Alertas de Umidade (usa AlertaUmidadeDTO)
-│   │                   │   │
-│   │                   │   ├── AuthController.java
-│   │                   │   │   └── • Endpoints de login e registro (JWT)
-│   │                   │   │
-│   │                   │   ├── BombaController.java
-│   │                   │   │   └── • CRUD de Bombas (usa BombaDTO)
-│   │                   │   │
-│   │                   │   ├── ConfiguracaoZonaController.java
-│   │                   │   │   └── • CRUD de Configurações de Zona (usa ConfiguracaoZonaDTO)
-│   │                   │   │
-│   │                   │   ├── EstadoController.java
-│   │                   │   │   └── • CRUD de Estados (usa EstadoDTO)
-│   │                   │   │
-│   │                   │   ├── HistoricoAcaoUsuarioController.java
-│   │                   │   │   └── • CRUD de Histórico de Ações de Usuário (usa HistoricoAcaoUsuarioDTO)
-│   │                   │   │
-│   │                   │   ├── IrrigacaoController.java
-│   │                   │   │   └── • CRUD de Irrigações (usa IrrigacaoDTO)
-│   │                   │   │
-│   │                   │   ├── LogAcaoBombaController.java
-│   │                   │   │   └── • CRUD de Logs de Ação de Bomba (usa LogAcaoBombaDTO)
-│   │                   │   │
-│   │                   │   ├── PropriedadeController.java
-│   │                   │   │   └── • CRUD de Propriedades (usa PropriedadeDTO)
-│   │                   │   │
-│   │                   │   ├── RegistroSensorController.java
-│   │                   │   │   └── • CRUD de Leituras de Sensor (usa RegistroSensorDTO)
-│   │                   │   │
-│   │                   │   ├── SensorController.java
-│   │                   │   │   └── • CRUD de Sensores (usa SensorDTO)
-│   │                   │   │
-│   │                   │   ├── UsuarioController.java
-│   │                   │   │   └── • CRUD de Usuários (usa UsuarioDTO)
-│   │                   │   │
-│   │                   │   └── ZonaController.java
-│   │                   │       └── • CRUD de Zonas (usa ZonaDTO)
-│   │                   │
-│   │                   ├── dto/
-│   │                   │   ├── AlertaUmidadeDTO.java
-│   │                   │   ├── BombaDTO.java
-│   │                   │   ├── ConfiguracaoZonaDTO.java
-│   │                   │   ├── EstadoDTO.java
-│   │                   │   ├── HistoricoAcaoUsuarioDTO.java
-│   │                   │   ├── IrrigacaoDTO.java
-│   │                   │   ├── LogAcaoBombaDTO.java
-│   │                   │   ├── PropriedadeDTO.java
-│   │                   │   ├── RegistroSensorDTO.java
-│   │                   │   ├── SensorDTO.java
-│   │                   │   ├── UsuarioDTO.java
-│   │                   │   └── ZonaDTO.java
-│   │                   │       └── • Cada DTO converte entre entidade e JSON
-│   │                   │
-│   │                   ├── exception/
-│   │                   │   ├── BadRequestException.java
-│   │                   │   │   └── • Exceção para requisições inválidas (HTTP 400)
-│   │                   │   │
-│   │                   │   ├── ErrorResponse.java
-│   │                   │   │   └── • Formato padrão de resposta de erro
-│   │                   │   │
-│   │                   │   ├── GlobalExceptionHandler.java
-│   │                   │   │   └── • Trata exceções globalmente e retorna JSON adequado
-│   │                   │   │
-│   │                   │   └── ResourceNotFoundException.java
-│   │                   │       └── • Exceção para recurso não encontrado (HTTP 404)
-│   │                   │
-│   │                   ├── model/
-│   │                   │   ├── AlertaUmidade.java
-│   │                   │   ├── Bomba.java
-│   │                   │   ├── ConfiguracaoZona.java
-│   │                   │   ├── Estado.java
-│   │                   │   ├── HistoricoAcaoUsuario.java
-│   │                   │   ├── Irrigacao.java
-│   │                   │   ├── LogAcaoBomba.java
-│   │                   │   ├── Propriedade.java
-│   │                   │   ├── RegistroSensor.java
-│   │                   │   ├── Sensor.java
-│   │                   │   ├── Usuario.java
-│   │                   │   └── Zona.java
-│   │                   │       └── • Entidades JPA com anotações @Entity, @OneToMany, etc.
-│   │                   │
-│   │                   ├── repository/
-│   │                   │   ├── AlertaUmidadeRepository.java
-│   │                   │   ├── BombaRepository.java
-│   │                   │   ├── ConfiguracaoZonaRepository.java
-│   │                   │   ├── EstadoRepository.java
-│   │                   │   ├── HistoricoAcaoUsuarioRepository.java
-│   │                   │   ├── IrrigacaoRepository.java
-│   │                   │   ├── LogAcaoBombaRepository.java
-│   │                   │   ├── PropriedadeRepository.java
-│   │                   │   ├── RegistroSensorRepository.java
-│   │                   │   ├── SensorRepository.java
-│   │                   │   ├── UsuarioRepository.java
-│   │                   │   └── ZonaRepository.java
-│   │                   │       └── • Interfaces estendendo JpaRepository<Entidade, Long>
-│   │                   │
-│   │                   ├── security/
-│   │                   │   ├── CustomUserDetailsService.java
-│   │                   │   │   └── • Carrega usuário (UserDetails) para Spring Security
-│   │                   │   │
-│   │                   │   ├── JwtAuthenticationFilter.java
-│   │                   │   │   └── • Filtro que extrai/valida JWT em cada requisição
-│   │                   │   │
-│   │                   │   └── JwtUtil.java
-│   │                   │       └── • Utilitário para gerar/parsear/validar tokens JWT
-│   │                   │
-│   │                   └── service/
-│   │                       ├── AlertaUmidadeService.java
-│   │                       ├── AuthService.java
-│   │                       ├── BombaService.java
-│   │                       ├── ConfiguracaoZonaService.java
-│   │                       ├── EstadoService.java
-│   │                       ├── HistoricoAcaoUsuarioService.java
-│   │                       ├── IrrigacaoService.java
-│   │                       ├── LogAcaoBombaService.java
-│   │                       ├── PropriedadeService.java
-│   │                       ├── RegistroSensorService.java
-│   │                       ├── SensorService.java
-│   │                       ├── UsuarioService.java
-│   │                       └── ZonaService.java
-│   │                           └── • Cada serviço implementa a lógica de negócio (CRUD, validações, etc.)
-│   │
-│   └── resources/
-│       ├── static/                    
-│       ├── templates/                 
-│       ├── application.properties     
-│      
-└── test/
-└── java/
-└── br/
-└── com/
-└── fiap/
-└── aquamind/
-├── controller/   ── • Testes de integração dos endpoints
-├── service/      ── • Testes unitários dos serviços
-└── repository/   ── • Testes de repositório (H2)
-
+### 🐳 **Arquitetura de Containers (DevOps)**
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              DOCKER ECOSYSTEM                               │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                        INGRESS LAYER                                │   │
+│  │                                                                     │   │
+│  │  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐                │   │
+│  │  │🌐 Nginx     │  │🔒 Certbot   │  │📊 Prometheus│                │   │
+│  │  │Reverse      │  │SSL Manager  │  │Monitoring   │                │   │
+│  │  │Proxy        │  │             │  │             │                │   │
+│  │  │Port: 80/443 │  │Auto-renewal │  │Port: 9090   │                │   │
+│  │  └─────────────┘  └─────────────┘  └─────────────┘                │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                    ↕                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                      APPLICATION LAYER                              │   │
+│  │                                                                     │   │
+│  │  ┌─────────────────┐              ┌─────────────────┐              │   │
+│  │  │🚀 AquaMind App  │              │🔄 Health Check  │              │   │
+│  │  │                 │              │Service          │              │   │
+│  │  │ • Spring Boot   │◄────────────►│                 │              │   │
+│  │  │ • Port: 8080    │   Network    │ • Liveness      │              │   │
+│  │  │ • JWT Auth      │   Bridge     │ • Readiness     │              │   │
+│  │  │ • REST API      │   (Custom)   │ • Startup       │              │   │
+│  │  │ • Business      │              │                 │              │   │
+│  │  │   Logic         │              └─────────────────┘              │   │
+│  │  │                 │                                               │   │
+│  │  │ Resources:      │              ┌─────────────────┐              │   │
+│  │  │ • CPU: 1 core   │              │📝 Logging       │              │   │
+│  │  │ • RAM: 1GB      │◄────────────►│Aggregator       │              │   │
+│  │  │ • Disk: 2GB     │              │                 │              │   │
+│  │  └─────────────────┘              │ • ELK Stack     │              │   │
+│  │             │                      │ • Fluentd       │              │   │
+│  │             │                      │ • Centralized   │              │   │
+│  │             │                      └─────────────────┘              │   │
+│  │  ┌──────────┴────────┐                                              │   │
+│  │  │📂 Volume Mounts   │                                              │   │
+│  │  │                   │                                              │   │
+│  │  │ • /app/logs       │                                              │   │
+│  │  │ • /app/config     │                                              │   │
+│  │  │ • /app/temp       │                                              │   │
+│  │  └───────────────────┘                                              │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                    ↕                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                       PERSISTENCE LAYER                             │   │
+│  │                                                                     │   │
+│  │  ┌─────────────────┐              ┌─────────────────┐              │   │
+│  │  │🗄️ MySQL 8.4     │              │💾 Redis Cache   │              │   │
+│  │  │Primary Database │              │Session Store    │              │   │
+│  │  │                 │              │                 │              │   │
+│  │  │ • Port: 3306    │◄────────────►│ • Port: 6379    │              │   │
+│  │  │ • aquamind DB   │   Network    │ • Key-Value     │              │   │
+│  │  │ • InnoDB Engine │   Bridge     │ • TTL Support   │              │   │
+│  │  │ • UTF8 Charset  │              │ • Pub/Sub       │              │   │
+│  │  │                 │              │                 │              │   │
+│  │  │ Resources:      │              │ Resources:      │              │   │
+│  │  │ • CPU: 1 core   │              │ • CPU: 0.5 core │              │   │
+│  │  │ • RAM: 2GB      │              │ • RAM: 512MB    │              │   │
+│  │  │ • Disk: 10GB    │              │ • Disk: 1GB     │              │   │
+│  │  └─────────────────┘              └─────────────────┘              │   │
+│  │             │                                │                      │   │
+│  │  ┌──────────┴────────┐            ┌────────┴──────────┐            │   │
+│  │  │📂 Persistent      │            │📂 Persistent      │            │   │
+│  │  │Volume             │            │Volume             │            │   │
+│  │  │                   │            │                   │            │   │
+│  │  │ • mysql-data      │            │ • redis-data      │            │   │
+│  │  │ • Backup Ready    │            │ • AOF Persistence │            │   │
+│  │  │ • Point-in-Time   │            │ • RDB Snapshots   │            │   │
+│  │  │   Recovery        │            │                   │            │   │
+│  │  └───────────────────┘            └───────────────────┘            │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                                                             │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                        NETWORK LAYER                                │   │
+│  │                                                                     │   │
+│  │  ┌─────────────────────────────────────────────────────────────┐   │   │
+│  │  │                    aquamind-network                         │   │   │
+│  │  │                                                             │   │   │
+│  │  │  Bridge Network: 172.20.0.0/16                            │   │   │
+│  │  │                                                             │   │   │
+│  │  │  Services:                                                  │   │   │
+│  │  │  • app       → 172.20.0.10:8080                           │   │   │
+│  │  │  • db        → 172.20.0.20:3306                           │   │   │
+│  │  │  • redis     → 172.20.0.30:6379                           │   │   │
+│  │  │  • nginx     → 172.20.0.5:80,443                          │   │   │
+│  │  │  • monitor   → 172.20.0.40:9090                           │   │   │
+│  │  │                                                             │   │   │
+│  │  │  DNS Resolution: Automatic service discovery               │   │   │
+│  │  │  Isolation: No external access except through nginx       │   │   │
+│  │  └─────────────────────────────────────────────────────────────┘   │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
 ```
 
+### ⚡ **Fluxo de Dados em Tempo Real**
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              DATA FLOW ARCHITECTURE                         │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  🌡️ SENSORES IoT                    📱 MOBILE APP                          │
+│  ┌─────────────────┐                ┌─────────────────┐                    │
+│  │ • Umidade Solo  │                │ • React Native  │                    │
+│  │ • Temperatura   │                │ • Push Notifications                │
+│  │ • pH Level      │                │ • Real-time Updates                 │
+│  │ • Luminosidade  │                │ • Offline Support                   │
+│  └─────────┬───────┘                └─────────┬───────┘                    │
+│            │                                  │                            │
+│            ▼                                  ▼                            │
+│  ┌─────────────────┐                ┌─────────────────┐                    │
+│  │ 📡 IoT Gateway  │                │ 🌐 API Gateway  │                    │
+│  │                 │                │                 │                    │
+│  │ • Protocol      │                │ • Rate Limiting │                    │
+│  │   Translation   │                │ • Authentication│                    │
+│  │ • Data          │                │ • Load Balancing│                    │
+│  │   Validation    │                │ • SSL/TLS       │                    │
+│  │ • Buffering     │                │                 │                    │
+│  └─────────┬───────┘                └─────────┬───────┘                    │
+│            │                                  │                            │
+│            └─────────────┬────────────────────┘                            │
+│                          ▼                                                 │
+│            ┌─────────────────────────────────────┐                        │
+│            │          🚀 SPRING BOOT API         │                        │
+│            │                                     │                        │
+│            │  ┌─────────────┐  ┌─────────────┐   │                        │
+│            │  │🔐 Security  │  │📊 Business  │   │                        │
+│            │  │Layer        │  │Logic Layer  │   │                        │
+│            │  │             │  │             │   │                        │
+│            │  │• JWT Auth   │  │• Rules      │   │                        │
+│            │  │• RBAC       │  │• Validation │   │                        │
+│            │  │• CORS       │  │• Processing │   │                        │
+│            │  └─────────────┘  └─────────────┘   │                        │
+│            │                                     │                        │
+│            │  ┌─────────────┐  ┌─────────────┐   │                        │
+│            │  │🚨 Alert     │  │⚙️ Automation│   │                        │
+│            │  │Engine       │  │Engine       │   │                        │
+│            │  │             │  │             │   │                        │
+│            │  │• Thresholds │  │• Irrigation │   │                        │
+│            │  │• Triggers   │  │• Scheduling │   │                        │
+│            │  │• Notifications│ │• Control   │   │                        │
+│            │  └─────────────┘  └─────────────┘   │                        │
+│            └─────────────┬───────────────────────┘                        │
+│                          ▼                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                      📊 DATA LAYER                                  │   │
+│  │                                                                     │   │
+│  │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐             │   │
+│  │  │🗄️ MySQL     │    │💾 Redis     │    │📈 InfluxDB  │             │   │
+│  │  │             │    │             │    │             │             │   │
+│  │  │• Relational │◄──►│• Cache      │◄──►│• Time Series│             │   │
+│  │  │• ACID       │    │• Sessions   │    │• Metrics    │             │   │
+│  │  │• Complex    │    │• Temp Data  │    │• Sensor Data│             │   │
+│  │  │  Queries    │    │• Fast R/W   │    │• Analytics  │             │   │
+│  │  └─────────────┘    └─────────────┘    └─────────────┘             │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                    ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                    🎯 CONTROL ACTIONS                               │   │
+│  │                                                                     │   │
+│  │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐             │   │
+│  │  │💧 Irrigation│    │📱 Alerts    │    │📊 Reports   │             │   │
+│  │  │System       │    │& Notifications   │& Analytics  │             │   │
+│  │  │             │    │             │    │             │             │   │
+│  │  │• Pump       │    │• Email      │    │• Daily      │             │   │
+│  │  │  Control    │    │• SMS        │    │• Weekly     │             │   │
+│  │  │• Valve      │    │• Push       │    │• Monthly    │             │   │
+│  │  │  Management │    │• Dashboard  │    │• Custom     │             │   │
+│  │  └─────────────┘    └─────────────┘    └─────────────┘             │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
----
+### 🔄 **DevOps Pipeline (CI/CD)**
+```
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                              CI/CD PIPELINE                                 │
+├─────────────────────────────────────────────────────────────────────────────┤
+│                                                                             │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐         │
+│  │📝 Development   │    │🔍 Code Quality  │    │🏗️ Build Stage    │         │
+│  │                 │    │                 │    │                 │         │
+│  │ • Feature       │───►│ • ESLint        │───►│ • Maven/Gradle  │         │
+│  │   Branches      │    │ • SonarQube     │    │ • Unit Tests    │         │
+│  │ • Pull Requests │    │ • Security Scan │    │ • Integration   │         │
+│  │ • Code Reviews  │    │ • Dependencies  │    │   Tests         │         │
+│  └─────────────────┘    └─────────────────┘    └─────────────────┘         │
+│                                                           │                 │
+│                                                           ▼                 │
+│  ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐         │
+│  │🐳 Container     │    │🧪 Testing       │    │📦 Artifact      │         │
+│  │Build            │    │Environment      │    │Management       │         │
+│  │                 │    │                 │    │                 │         │
+│  │ • Dockerfile    │◄───│ • E2E Tests     │◄───│ • Docker Images │         │
+│  │ • Multi-stage   │    │ • API Tests     │    │ • Version Tags  │         │
+│  │ • Optimization  │    │ • Performance   │    │ • Registry Push │         │
+│  │ • Security Scan │    │ • Load Tests    │    │ • Vulnerability │         │
+│  └─────────────────┘    └─────────────────┘    └─────────────────┘         │
+│           │                                                                 │
+│           ▼                                                                 │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                        🚀 DEPLOYMENT STAGES                         │   │
+│  │                                                                     │   │
+│  │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐             │   │
+│  │  │🔧 DEV       │    │🧪 STAGING   │    │🌟 PRODUCTION│             │   │
+│  │  │Environment  │    │Environment  │    │Environment  │             │   │
+│  │  │             │    │             │    │             │             │   │
+│  │  │• Auto       │───►│• Manual     │───►│• Blue/Green │             │   │
+│  │  │  Deploy     │    │  Approval   │    │  Deployment │             │   │
+│  │  │• Feature    │    │• UAT        │    │• Canary     │             │   │
+│  │  │  Testing    │    │• Smoke      │    │  Release    │             │   │
+│  │  │• Quick      │    │  Tests      │    │• Monitoring │             │   │
+│  │  │  Feedback   │    │• Pre-prod   │    │• Rollback   │             │   │
+│  │  └─────────────┘    └─────────────┘    └─────────────┘             │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+│                                    ▼                                        │
+│  ┌─────────────────────────────────────────────────────────────────────┐   │
+│  │                    📊 MONITORING & OBSERVABILITY                    │   │
+│  │                                                                     │   │
+│  │  ┌─────────────┐    ┌─────────────┐    ┌─────────────┐             │   │
+│  │  │📈 Metrics   │    │📝 Logging   │    │🔍 Tracing   │             │   │
+│  │  │             │    │             │    │             │             │   │
+│  │  │• Prometheus │    │• ELK Stack  │    │• Jaeger     │             │   │
+│  │  │• Grafana    │    │• Fluentd    │    │• Zipkin     │             │   │
+│  │  │• Alerts     │    │• Kibana     │    │• APM        │             │   │
+│  │  │• Dashboards │    │• Log Agg    │    │• Distributed│             │   │
+│  │  └─────────────┘    └─────────────┘    └─────────────┘             │   │
+│  └─────────────────────────────────────────────────────────────────────┘   │
+└─────────────────────────────────────────────────────────────────────────────┘
+```
 
-## 📦 Entidades de Domínio
-**Usuario**
-- **Campos:** `id`, `nome`, `email`, `senha (BCrypt)`, `perfis (List<String>)`, `propriedades (List<Propriedade>)`.
-- **Relacionamentos:** 1:N para **Propriedade**.
+## 🚀 Tecnologias
 
-**Propriedade**
-- **Campos:** `id`, `nome`, `endereco`, `usuario (N:1)`, `zonas (List<Zona>)`.
-- **Relacionamentos:** N:1 para **Usuario**, 1:N para **Zona**.
+### 🔧 **Backend**
+- **Java 21** - Linguagem de programação
+- **Spring Boot 3.5.0** - Framework principal
+- **Spring Data JPA** - Persistência de dados
+- **Spring Security** - Autenticação e autorização
+- **MySQL 8.4.5** - Banco de dados relacional
+- **JWT** - Tokens de autenticação
+- **Swagger/OpenAPI** - Documentação da API
 
-**Zona**
-- **Campos:** `id`, `nome`, `umidadeAlvo`, `propriedade (N:1)`, `sensores (List<Sensor>)`, `irrigacoes (List<Irrigacao>)`.
-- **Relacionamentos:** N:1 para **Propriedade**, 1:N para **Sensor** e **Irrigacao**.
+### 🐳 **DevOps & Infrastructure**
+- **Docker** - Containerização
+- **Docker Compose** - Orquestração de containers
+- **Multi-stage Build** - Otimização de imagens
+- **Gradle** - Gerenciamento de dependências
+- **Health Checks** - Monitoramento de saúde
 
-**Sensor**
-- **Campos:** `id`, `tipoSensor`, `modelo`, `zona (N:1)`, `leituras (List<Leitura>)`.
-- **Relacionamentos:** N:1 para **Zona**, 1:N para **Leitura**.
+### 📊 **Monitoramento & Observabilidade**
+- **Structured Logging** - Logs padronizados
+- **Health Endpoints** - Status da aplicação
+- **Metrics Exposure** - Métricas de performance
+- **Request Tracking** - Rastreamento de requisições
 
-**Leitura**
-- **Campos:** `id`, `sensor (N:1)`, `umidade (Double)`, `timestamp (LocalDateTime)`, `alerta (Boolean)`.
-- **Relacionamentos:** N:1 para **Sensor**.
+## ⚙️ Pré-requisitos
 
-**Irrigacao**
-- **Campos:** `id`, `zona (N:1)`, `dataHoraInicio`, `dataHoraFim`, `volumeAgua (Double)`.
-- **Relacionamentos:** N:1 para **Zona**.
+Antes de executar o projeto, certifique-se de ter instalado:
 
----
+- **Docker** 20.10+ [📥 Download](https://www.docker.com/get-started)
+- **Docker Compose** 2.0+ [📥 Download](https://docs.docker.com/compose/install/)
+- **Git** [📥 Download](https://git-scm.com/downloads)
 
-## 💻 Tecnologias Utilizadas
-- **Linguagem:** Java 21
-- **Framework:** Spring Boot 3.5.0
-   - Módulos: Web, Data JPA, Security, Validation
-- **Banco de Dados:** H2 (em memória) → fácil setup para testes.
-- **Persistência:** Spring Data JPA (Hibernate)
-- **Autenticação:** JWT (io.jsonwebtoken:jjwt) + Spring Security
-- **Documentação:** SpringDoc OpenAPI (Swagger UI)
-- **Validação:** Bean Validation (jakarta.validation)
-- **Lombok:** Redução de boilerplate (getters, setters, construtores)
-- **MQTT / Node-RED:** Processamento de leituras IoT
-- **Containerização (Opcional):** Docker & Docker Compose
-- **Testes:** JUnit 5 + Spring Boot Test + Spring Security Test
+### 🔍 **Verificar Instalação**
+```bash
+# Verificar versões
+docker --version          # Docker version 20.10+
+docker-compose --version  # Docker Compose version 2.0+
+git --version             # Git version 2.30+
+```
 
----
+## 🐳 Instalação e Execução
 
-## 📋 Pré-requisitos
-- JDK 21 instalado
-- Gradle (wrapper incluído no projeto)
-- Git
-- IDE recomendada: IntelliJ IDEA (Community ou Ultimate)
-- (Opcional) Docker e Docker Compose
+### 1️⃣ **Clone o Repositório**
+```bash
+git clone https://github.com/seu-usuario/aquamind-devops.git
+cd aquamind-devops/AquaMind-Java
+```
 
----
+### 2️⃣ **Execute o Script de Deploy**
+```bash
+# Dar permissão de execução
+chmod +x executar_api_completa.sh
 
-## ▶️ Como Executar Localmente
-1. **Backend (API Spring Boot)**  
-   Clone o repositório:
-   ```bash
-   git clone https://github.com/Danie-Anx/AquaMind-Java.git
-   cd AquaMind-Java
+# Executar aplicação completa
+bash executar_api_completa.sh
+```
 
+### 3️⃣ **Ou Execute Manualmente**
+```bash
+# Parar containers existentes
+docker-compose down -v
 
-## 🔗 Rotas Principais da API
+# Subir aplicação + banco
+docker-compose up --build
+```
 
-| Método | Caminho                    | Descrição                                |
-| ------ |----------------------------| ---------------------------------------- |
-| POST   | `/api/auth/register`       | Registrar novo usuário (JWT)             |
-| POST   | `/api/auth/login`          | Fazer login e obter token JWT            |
-| GET    | `/api/propriedades`        | Listar propriedades do usuário           |
-| GET    | `/api/propriedades/{id}`   | Obter detalhes de uma propriedade        |
-| POST   | `/api/propriedades`        | Criar nova propriedade                   |
-| PUT    | `/api/propriedades/{id}`   | Atualizar propriedade                    |
-| DELETE | `/api/propriedades/{id}`   | Deletar propriedade                      |
-| GET    | `/api/zonas`               | Listar zonas                             |
-| GET    | `/api/zonas/{id}`          | Obter detalhes da zona                   |
-| POST   | `/api/zonas`               | Criar nova zona                          |
-| PUT    | `/api/zonas/{id}`          | Atualizar zona                           |
-| DELETE | `/api/zonas/{id}`          | Deletar zona                             |
-| GET    | `/api/sensores`            | Listar sensores                          |
-| GET    | `/api/sensores/{id}`       | Obter detalhes do sensor                 |
-| POST   | `/api/sensores`            | Criar novo sensor                        |
-| PUT    | `/api/sensores/{id}`       | Atualizar sensor                         |
-| DELETE | `/api/sensores/{id}`       | Deletar sensor                           |
-| GET    | `/api/RegistraSensor`      | Listar leituras de sensores              |
-| GET    | `/api/RegistraSensor/{id}` | Obter leitura específica                 |
-| POST   | `/api/RegistraSensor`      | Registrar nova leitura                   |
-| PUT    | `/api/RegistraSensor/{id}` | Atualizar leitura existente              |
-| DELETE | `/api/RegistraSensor/{id}` | Deletar leitura                          |
-| GET    | `/api/irrigacoes`          | Listar histórico de irrigações           |
-| GET    | `/api/irrigacoes/{id}`     | Obter detalhes de irrigação              |
-| POST   | `/api/irrigacoes`          | Criar novo registro de irrigação         |
-| PUT    | `/api/irrigacoes/{id}`     | Atualizar irrigação existente            |
-| DELETE | `/api/irrigacoes/{id}`     | Deletar irrigação                        |
+### 4️⃣ **Verificar Execução**
+```bash
+# Verificar containers rodando
+docker-compose ps
 
-### Observações:
+# Acompanhar logs
+docker-compose logs -f
 
-- **"O header Authorization: Bearer {token} deve ser enviado em todas as chamadas após o login."**
-- **"Cada rota de CRUD segue as boas práticas REST (status codes 200/201/204/400/401/403/404)."**
+# Verificar saúde da aplicação
+curl http://localhost:8080/api/estados
+```
 
-# Alguns Testes Manuais via Swagger UI e Obter Token
+### 🌐 **Acessar Aplicação**
+- **API Base**: http://localhost:8080
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **API Docs**: http://localhost:8080/v3/api-docs
+- **Health Check**: http://localhost:8080/actuator/health
 
-## Registrar Usuário
+## 📚 Documentação da API
 
-No Auth Controller → `POST /api/auth/register`, envie um JSON como:
+### 🔗 **Swagger UI**
+Acesse a documentação interativa em: **http://localhost:8080/swagger-ui.html**
 
+### 🔐 **Autenticação**
+
+#### Registrar Usuário
+```bash
+curl -X POST http://localhost:8080/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "nome": "João Silva",
+    "email": "joao@teste.com",
+    "senha": "123456",
+    "tipoUsuario": "PROPRIETARIO"
+  }'
+```
+
+#### Fazer Login
+```bash
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "joao@teste.com",
+    "senha": "123456"
+  }'
+```
+
+#### Usar Token
+```bash
+# Salvar token retornado no login
+TOKEN="seu-jwt-token-aqui"
+
+# Fazer requisições autenticadas
+curl -H "Authorization: Bearer $TOKEN" \
+  http://localhost:8080/api/propriedades
+```
+
+### 📋 **Principais Endpoints**
+
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `POST` | `/api/auth/register` | Registrar usuário |
+| `POST` | `/api/auth/login` | Fazer login |
+| `GET` | `/api/usuarios` | Listar usuários |
+| `GET` | `/api/propriedades` | Listar propriedades |
+| `POST` | `/api/propriedades` | Criar propriedade |
+| `GET` | `/api/zonas` | Listar zonas |
+| `POST` | `/api/zonas` | Criar zona |
+| `GET` | `/api/sensores` | Listar sensores |
+| `POST` | `/api/sensores` | Criar sensor |
+| `GET` | `/api/alertas-umidade` | Listar alertas |
+| `GET` | `/api/estados` | Listar estados |
+
+### 💾 **Exemplos de Payloads**
+
+#### Criar Propriedade
 ```json
 {
-   "nome": "daniel",
-   "email": "daniel@gmail.com",
-   "senha": "daniel12345",
-   "tipoUsuario": "ROLE_USER",
-   "ativo": true
+  "nome": "Fazenda Santa Clara",
+  "idUsuario": 1,
+  "idEstado": 1,
+  "areaHectares": 150.5,
+  "ativo": true
 }
 ```
-Clique em Execute.
 
-----------------------
-
-## Login de Usuario
-
-No Auth Controller → `POST /api/auth/login`, envie um JSON como:
-
+#### Criar Zona
 ```json
 {
-   "email": "daniel@gmail.com",
-   "senha": "daniel12345"
+  "nome": "Zona A - Soja",
+  "idPropriedade": 1,
+  "areaHectares": 50.0,
+  "ativo": true
 }
 ```
-Clique em Execute que irá aparecer o (TOKEN) para autenticação.
 
-----------------------
-
-## “Authorize” no Swagger
-No canto superior direito do Swagger UI, clique no botão Authorize (ícone de cadeado).
-
-No modal que abrir, cole o token obtido com o prefixo Bearer (exemplo: Bearer eyJhbGciOiJI...).
-
-Clique em Authorize e depois em Close.
-
-Agora todos os endpoints marcados com ícone de cadeado aceitarão esse token no header Authorization.
-
-----------------------
-
-## Exemplos de algumas Chamadas CRUD
-
-### Criar Propriedade
-
-Endpoint: POST /api/propriedades
-
-Body:
-
+#### Criar Sensor
 ```json
 {
-   "nome": "Fazenda Sol",
-   "idUsuario": 1,
-   "idEstado": 1,
-   "areaHectares": 10.0,
-   "ativo": true
-}
-```
-Clique em Execute e observe o HTTP 200 com o JSON da nova propriedade.
-
-----------------------
-
-### Criar Estado 
-
-Endpoint: POST /api/estados
-
-Body:
-
-```json
-{
-   "nome": "São Paulo",
-   "sigla": "SP"
-}
-```
-Clique em Execute. Deve retornar HTTP 201 e o JSON do estado criado.
-
-----------------------
-
-### Criar Zona
-
-Endpoint: POST /api/zonas
-
-Body:
-
-```json
-{
-   "idPropriedade": 1,
-   "nome": "Zona A",
-   "areaHectares": 1.5, 
-   "ativo": true
-}
-
-```
-Execute → HTTP 201 com JSON da zona.
-
-----------------------
-
-### Pegar zona:  
-
-Endpoint: GET /api/zonas/{id}
-
-Clicar no botão TRY IT OUT
-
-colocar o ID
-
-Execute → HTTP 201 com JSON da zona.
-
-#### Curl
-
-curl -X 'GET' \
-- 'http://localhost:8080/api/zonas/1' \
-- -H 'accept: */*' \
-- -H 'Authorization: Bearer (TOKEN)'
-
-#### Request URL
-
-- http://localhost:8080/api/zonas/1
-
-#### Response body
-
-```json
-{
-"id": 1,
-"idPropriedade": 1,
-"nome": "Zona A",
-"areaHectares": 1.5,
-"ativo": true
+  "idZona": 1,
+  "tipoSensor": "UMIDADE",
+  "modelo": "DHT22",
+  "ativo": true,
+  "dataInstalacao": "2025-06-08"
 }
 ```
 
--------
+## 🧪 Testes
 
-### Atualizar zona:
+### 🔍 **Testes de Conectividade**
+```bash
+# Testar API básica
+curl -i http://localhost:8080/api/estados
 
-**Mudamos a zona A para Zona B**
+# Testar autenticação
+curl -X POST http://localhost:8080/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email":"joao@teste.com","senha":"123456"}'
 
-Endpoint: PUT /api/zonas/{id}
-
-Clicar no botão TRY IT OUT
-
-colocar o ID
-
-Execute → HTTP 201 com JSON da zona.
-
-#### Curl
-
-curl -X 'PUT' \
-'http://localhost:8080/api/zonas/1' \
-- -H 'accept: */*' \
-- -H 'Authorization: Bearer (TOKEN)' \
-- -H 'Content-Type: application/json' \
-- -d '{
-- "id": 1,
-- "idPropriedade": 1,
-- "nome": "Zona B",
-- "areaHectares": 1.5,
-- "ativo": true
-- }'
-
-#### Request URL
-
-- http://localhost:8080/api/zonas/1
-
-#### Response body
-
-```json
-{
-   "id": 1,
-   "idPropriedade": 1,
-   "nome": "Zona B",
-   "areaHectares": 1.5,
-   "ativo": true
-}
+# Testar health check
+curl http://localhost:8080/actuator/health
 ```
---------
 
-### Deletando zona:
+### 📊 **Monitoramento**
+```bash
+# Ver logs da aplicação
+docker-compose logs -f app
 
-**Deletando a Zona de id: 1**
+# Ver logs do banco
+docker-compose logs -f db
 
-Endpoint: DELETE /api/zonas/{id}
+# Monitorar recursos
+docker stats
+```
 
-Clicar no botão TRY IT OUT
+### 🛠️ **Debug**
+```bash
+# Acessar container da aplicação
+docker-compose exec app bash
 
-colocar o ID
+# Acessar banco MySQL
+docker-compose exec db mysql -u root -p aquamind
 
-Execute → HTTP 204 com JSON da zona.
+# Verificar network
+docker network ls
+docker network inspect aquamind-java_default
+```
 
-#### Curl
+## 👥 Integrantes
 
-curl -X 'DELETE' \
-'http://localhost:8080/api/zonas/1' \
--H 'accept: */*' \
--H 'Authorization: Bearer (TOKEN)'
+| Nome | RM | GitHub |
+|------|-----|---------|
+| **Membro 1** | RM12345 | [@membro1](https://github.com/@membro1) |
+| **Membro 2** | RM23456 | [@membro2](https://github.com/membro2) |
+| **Membro 3** | RM34567 | [@membro3](https://github.com/membro3) |
 
-#### Request URL
+> **Nota**: Substitua pelos dados reais dos integrantes do seu grupo.
 
-- http://localhost:8080/api/zonas/1
+## 🎥 Demonstração
 
+### 📹 **Vídeo no YouTube**
+🔗 **Link do vídeo**: [AquaMind - Demonstração Completa](https://youtube.com/watch?v=SEU_VIDEO_ID)
 
----------------------
-   
-# 👥 Equipe AquaMind
+### 🎬 **Conteúdo do Vídeo** (5 minutos)
+1. **Introdução** (30s) - Apresentação da solução
+2. **Arquitetura** (1min) - Explicação técnica e DevOps
+3. **Deploy** (1min) - Demonstração do Docker Compose
+4. **API** (2min) - Testes dos endpoints principais
+5. **Funcionalidades** (1min) - CRUD e business logic
+6. **Conclusão** (30s) - Resultados e próximos passos
 
-- Robert Daniel da Silva Coimbra - RM555881 – Desenvolvedor Full Stack
+### 📸 **Screenshots**
 
-- Marcos Antonio Ramalho Neto - RM554611 – Arquiteto de Solução / UX Designer
+#### Swagger Documentation
+![Swagger UI](./docs/images/swagger-ui.png)
 
-- Arthur Ramos Dos Santos - RM558798 – Desenvolvedor Full Stack / DevOps
+#### Docker Containers
+![Docker Status](./docs/images/docker-containers.png)
+
+#### API Testing
+![API Tests](./docs/images/api-tests.png)
+
+## 🔧 Configuração Avançada
+
+### 🌍 **Variáveis de Ambiente**
+```bash
+# Para produção, configure:
+export DATABASE_URL=jdbc:mysql://host:port/database
+export DB_USERNAME=usuario
+export DB_PASSWORD=senha_segura
+export JWT_SECRET=chave_jwt_super_segura
+export SPRING_PROFILES_ACTIVE=production
+```
+
+### ☁️ **Deploy em Nuvem**
+```bash
+# Exemplo para Railway
+railway login
+railway up
+
+# Exemplo para Heroku
+heroku create aquamind-api
+heroku container:push web
+heroku container:release web
+```
+
+### 📊 **Monitoramento Avançado**
+- **Prometheus**: Metrics collection
+- **Grafana**: Dashboards e alertas
+- **ELK Stack**: Centralized logging
+- **APM Tools**: Performance monitoring
+
+## 🤝 Contribuição
+
+1. **Fork** o projeto
+2. **Clone** seu fork
+3. **Crie** uma branch para sua feature
+4. **Commit** suas mudanças
+5. **Push** para a branch
+6. **Abra** um Pull Request
+
+### 📋 **Guidelines**
+- Siga os padrões de código estabelecidos
+- Adicione testes para novas funcionalidades
+- Atualize a documentação quando necessário
+- Use mensagens de commit descritivas
+
+## 📄 Licença
+
+Este projeto está sob a licença **MIT**. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+
+---
+
+## 🌟 Reconhecimentos
+
+- **FIAP** - Instituição de ensino
+- **Professor(a)** - Orientação técnica
+- **Comunidade Spring** - Documentação e suporte
+- **Docker Community** - Ferramentas de containerização
+
+---
+
+<div align="center">
+
+### 🌊 **AquaMind - Irrigação Inteligente para um Futuro Sustentável**
+
+![Footer](https://img.shields.io/badge/Made%20with-❤️-red?style=for-the-badge)
+![FIAP](https://img.shields.io/badge/FIAP-2025-blue?style=for-the-badge)
+
+**[⬆ Voltar ao topo](#-aquamind---sistema-inteligente-de-irrigação)**
+
+</div>

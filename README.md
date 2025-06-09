@@ -626,8 +626,8 @@ Robert Daniel da Silva Coimbra - RM555881
 
 ## 🎥 Demonstração
 
-### 📹 **Vídeo no YouTube**
-🔗 **Link do vídeo**: [AquaMind - Demonstração Completa]([https://youtube.com/watch?v=SEU_VIDEO_ID](https://youtu.be/mEO2V66IWpk))
+### 📹 **Vídeo no YouTube**/
+🔗 **Link do vídeo**: [AquaMind - Demonstração Completa]((https://youtu.be/mEO2V66IWpk))
 
 ### 🎬 **Conteúdo do Vídeo** (5 minutos)
 1. **Introdução** (30s) - Apresentação da solução

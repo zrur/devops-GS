@@ -618,18 +618,16 @@ docker network inspect aquamind-java_default
 
 ## 👥 Integrantes
 
-| Nome | RM | GitHub |
-|------|-----|---------|
-| **Membro 1** | RM12345 | [@membro1](https://github.com/@membro1) |
-| **Membro 2** | RM23456 | [@membro2](https://github.com/membro2) |
-| **Membro 3** | RM34567 | [@membro3](https://github.com/membro3) |
+Arthur Ramos Dos Santos - RM558798  
+Marcos Antonio Ramalho Neto RM554611 
+Robert Daniel da Silva Coimbra - RM555881 
 
 > **Nota**: Substitua pelos dados reais dos integrantes do seu grupo.
 
 ## 🎥 Demonstração
 
 ### 📹 **Vídeo no YouTube**
-🔗 **Link do vídeo**: [AquaMind - Demonstração Completa](https://youtube.com/watch?v=SEU_VIDEO_ID)
+🔗 **Link do vídeo**: [AquaMind - Demonstração Completa]([https://youtube.com/watch?v=SEU_VIDEO_ID](https://youtu.be/mEO2V66IWpk))
 
 ### 🎬 **Conteúdo do Vídeo** (5 minutos)
 1. **Introdução** (30s) - Apresentação da solução

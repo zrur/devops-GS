@@ -19,7 +19,7 @@
 - [📚 Documentação da API](#-documentação-da-api)
 - [🧪 Testes](#-testes)
 - [👥 Integrantes](#-integrantes)
-- [🎥 Demonstração](#-demonstração)
+
 - [📄 Licença](#-licença)
 
 ## 📖 Sobre o Projeto
@@ -622,31 +622,8 @@ Arthur Ramos Dos Santos - RM558798
 Marcos Antonio Ramalho Neto RM554611 
 Robert Daniel da Silva Coimbra - RM555881 
 
-> **Nota**: Substitua pelos dados reais dos integrantes do seu grupo.
 
-## 🎥 Demonstração
 
-### 📹 **Vídeo no YouTube**/
-🔗 **Link do vídeo**: [AquaMind - Demonstração Completa]((https://youtu.be/mEO2V66IWpk))
-
-### 🎬 **Conteúdo do Vídeo** (5 minutos)
-1. **Introdução** (30s) - Apresentação da solução
-2. **Arquitetura** (1min) - Explicação técnica e DevOps
-3. **Deploy** (1min) - Demonstração do Docker Compose
-4. **API** (2min) - Testes dos endpoints principais
-5. **Funcionalidades** (1min) - CRUD e business logic
-6. **Conclusão** (30s) - Resultados e próximos passos
-
-### 📸 **Screenshots**
-
-#### Swagger Documentation
-![Swagger UI](./docs/images/swagger-ui.png)
-
-#### Docker Containers
-![Docker Status](./docs/images/docker-containers.png)
-
-#### API Testing
-![API Tests](./docs/images/api-tests.png)
 
 ## 🔧 Configuração Avançada
 
